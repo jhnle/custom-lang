@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "../ipa/ipa.h"
 
@@ -8,47 +9,30 @@ int main() {
     std::map<std::string, SoundSymbol> soundSymbols;
     soundSymbols = getSoundSymbols();
 
-    std::cout << "CONSONANTS\n";
-    printSymbol(soundSymbols["p"]);
-    printSymbol(soundSymbols["b"]);
-    printSymbol(soundSymbols["t"]);
-    printSymbol(soundSymbols["d"]);
-    printSymbol(soundSymbols["k"]);
-    printSymbol(soundSymbols["g"]);
-    printSymbol(soundSymbols["ʔ"]);
-    printSymbol(soundSymbols["m"]);
-    printSymbol(soundSymbols["n"]);
-    printSymbol(soundSymbols["ŋ"]);
-    printSymbol(soundSymbols["ɾ"]);
-    printSymbol(soundSymbols["f"]);
-    printSymbol(soundSymbols["v"]);
-    printSymbol(soundSymbols["θ"]);
-    printSymbol(soundSymbols["ð"]);
-    printSymbol(soundSymbols["s"]);
-    printSymbol(soundSymbols["z"]);
-    printSymbol(soundSymbols["ʃ"]);
-    printSymbol(soundSymbols["ʒ"]);
-    printSymbol(soundSymbols["h"]);
-    printSymbol(soundSymbols["tʃ"]);
-    printSymbol(soundSymbols["dʒ"]);
-    printSymbol(soundSymbols["ɹ"]);
-    printSymbol(soundSymbols["l"]);
-    printSymbol(soundSymbols["j"]);
-    printSymbol(soundSymbols["w"]);
+    std::vector<std::string> consonants;
+    std::vector<std::string> vowels;
 
-    std::cout << "\nVOWELS\n";
-    printSymbol(soundSymbols["i"]);
-    printSymbol(soundSymbols["u"]);
-    printSymbol(soundSymbols["ɪ"]);
-    printSymbol(soundSymbols["ʊ"]);
-    printSymbol(soundSymbols["e"]);
-    printSymbol(soundSymbols["o"]);
-    printSymbol(soundSymbols["ə"]);
-    printSymbol(soundSymbols["ɛ"]);
-    printSymbol(soundSymbols["ʌ"]);
-    printSymbol(soundSymbols["ɔ"]);
-    printSymbol(soundSymbols["æ"]);
-    printSymbol(soundSymbols["ɑ"]);
+    /* Iterate through all terms of soundSymbols and place the
+     * current soundSymbol in the appropriate vector
+     */
+    for (auto const& sym : soundSymbols) {
+        if (sym.second.getType() == CONSONANT)
+            consonants.push_back("[" + sym.first + "] " + sym.second.getName());
+        else
+            vowels.push_back("[" + sym.first + "] " + sym.second.getName());
+    }
+
+    // Print all consonants
+    std::cout << "Consonants\n----\n";
+    for (auto const& sym: consonants) {
+        std::cout << sym << std::endl;
+    }
+
+    // Print all vowels
+    std::cout << "\nVowels\n----\n";
+    for (auto const& sym: vowels) {
+        std::cout << sym << std::endl;
+    }
 
     return 0;
 }

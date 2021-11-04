@@ -60,6 +60,7 @@ class SoundSymbol {
 private:
     Type type;
     std::string symbol;
+    std::string name;
     bool isVoiced;
 
     // Consonant members
@@ -72,19 +73,27 @@ private:
     Part part;
     bool isRounded;
     bool isTense;
+
 public:
     // Consonant Constructor
-    SoundSymbol(std::string symbol, bool isVoiced, Place place, Manner manner, bool isPulmonic) {
+    SoundSymbol(std::string symbol, bool isVoiced, Place place,
+                Manner manner, bool isPulmonic) {
+
         type = CONSONANT;
         this->symbol = symbol;
         this->isVoiced = isVoiced;
         this->place = place;
         this->manner = manner;
         this-> isPulmonic = isPulmonic;
+
+        name += getStrVoiced(isVoiced) + " " + getStrPlace(place)
+                + " " + getStrManner(manner);
     }
 
     // Vowel Constructor
-    SoundSymbol(std::string symbol, bool isVoiced, Height height, Part part, bool isRounded, bool isTense) {
+    SoundSymbol(std::string symbol, bool isVoiced, Height height,
+                Part part, bool isRounded, bool isTense) {
+
         type = VOWEL;
         this->symbol = symbol;
         this->isVoiced = isVoiced;
@@ -92,23 +101,36 @@ public:
         this->part = part;
         this->isRounded = isRounded;
         this->isTense = isTense;
+
+        name += ((!isVoiced) ? getStrVoiced(isVoiced) + " " : "") + getStrHeight(height) + " "
+                + getStrPart(part) + " " + getStrRounded(isRounded) + " "
+                + getStrTense(isTense) + " Vowel";
     }
 
     SoundSymbol(){}
 
-    Type getType() { return type; }
-    std::string getSymbol() { return symbol; }
-    bool isSymVoiced() { return isVoiced; }
-    bool isSymPulmonic() { return isPulmonic; }
-    bool isSymRounded() { return isRounded; }
-    bool isSymTense() { return isTense; }
-    Place getPlace() { return place; }
-    Manner getManner() { return manner; }
-    Height getHeight() { return height; }
-    Part getPart() { return part; }
+    Type getType() const { return type; }
+    std::string getSymbol() const { return symbol; }
+    std::string getName() const { return name; }
+    bool isSymVoiced() const { return isVoiced; }
+    bool isSymPulmonic() const { return isPulmonic; }
+    bool isSymRounded() const { return isRounded; }
+    bool isSymTense() const { return isTense; }
+    Place getPlace() const { return place; }
+    Manner getManner() const { return manner; }
+    Height getHeight() const { return height; }
+    Part getPart() const { return part; }
 
+    std::string getStrVoiced (bool);
+    std::string getStrPlace (Place);
+    std::string getStrManner (Manner);
+    std::string getStrHeight (Height);
+    std::string getStrPart (Part);
+    std::string getStrRounded (bool);
+    std::string getStrTense (bool);
 };
 
 std::map<std::string, SoundSymbol> getSoundSymbols();
-void printSymbol(SoundSymbol sym);
+void printSymbol(SoundSymbol);
+
 #endif

@@ -1,12 +1,6 @@
 #include <iostream>
 #include "ipa.h"
 
-static std::string printMember(Place place);
-static std::string printMember(Manner manner);
-static std::string printMember(Height height);
-static std::string printMember(Part part);
-static std::string printMember(bool b);
-
 /* Creates an object for each unit of sound and stores them in a map,
  *  Where the symbol is the key, and the corresponding object is the value */
 std::map<std::string, SoundSymbol> getSoundSymbols() {
@@ -98,30 +92,14 @@ std::map<std::string, SoundSymbol> getSoundSymbols() {
     return soundSymbols;
 }
 
-void printSymbol(SoundSymbol sym) {
-    switch (sym.getType()) {
-        case CONSONANT:
-            std::cout << "~~~\n[" << sym.getSymbol() << "]\n"
-                      << "Place of Articulation: " << printMember(sym.getPlace()) << std::endl
-                      << "Manner of Articulation: " << printMember(sym.getManner()) << std::endl
-                      << "Is voiced: " << printMember(sym.isSymVoiced()) << std::endl
-                      << "Is pulmonic: " << printMember(sym.isSymPulmonic()) << std::endl;
-            break;
-        case VOWEL:
-            std::cout << "~~~\n[" << sym.getSymbol() << "]\n"
-                      << "Tongue Height: " << printMember(sym.getHeight()) << std::endl
-                      << "Tongue Position: " << printMember(sym.getPart()) << std::endl
-                      << "Is Rounded: " << printMember(sym.isSymRounded()) << std::endl
-                      << "Is Tense: " << printMember(sym.isSymTense()) << std::endl
-                      << "Is voiced: " << printMember(sym.isSymVoiced()) << std::endl;
-            break;
-        default:
-            std::cout << "N/A\n";
-            break;
-    }
+std::string SoundSymbol::getStrVoiced (bool isVoiced) {
+    if (isVoiced)
+        return "Voiced";
+    else
+        return "Voiceless";
 }
 
-static std::string printMember(Place place) {
+std::string SoundSymbol::getStrPlace (Place place) {
     switch (place) {
         case BILABIAL:
             return "Bilabial";
@@ -162,7 +140,7 @@ static std::string printMember(Place place) {
     }
 }
 
-static std::string printMember(Manner manner) {
+std::string SoundSymbol::getStrManner(Manner manner) {
     switch (manner) {
         case PLOSIVE:
             return "Plosive";
@@ -175,6 +153,7 @@ static std::string printMember(Manner manner) {
             break;
         case FLAP:
             return "Flap";
+            break;
         case FRICATIVE:
             return "Fricative";
             break;
@@ -193,27 +172,28 @@ static std::string printMember(Manner manner) {
         default:
             return "N/A\n";
             break;
-    }
+        }
 }
 
-static std::string printMember(Height height) {
+std::string SoundSymbol::getStrHeight(Height height) {
     switch (height) {
         case CLOSE:
             return "Close";
             break;
         case NEAR_CLOSE:
-            return "Near Close";
+            return "Near-Close";
             break;
         case CLOSE_MID:
-            return "Close Mid";
+            return "Close-Mid";
             break;
         case MID:
             return "Mid";
+            break;
         case OPEN_MID:
-            return "Open Mid";
+            return "Open-Mid";
             break;
         case NEAR_OPEN:
-            return "Near Open";
+            return "Near-Open";
             break;
         case OPEN:
             return "Open";
@@ -224,7 +204,7 @@ static std::string printMember(Height height) {
     }
 }
 
-static std::string printMember(Part part) {
+std::string SoundSymbol::getStrPart(Part part) {
     switch (part) {
         case FRONT:
             return "Front";
@@ -241,10 +221,16 @@ static std::string printMember(Part part) {
     }
 }
 
-static std::string printMember(bool b) {
-    if (b) {
-        return "True";
-    } else {
-        return "False";
-    }
+std::string SoundSymbol::getStrRounded(bool isRounded) {
+    if (isRounded)
+        return "Rounded";
+    else
+        return "Unrounded";
+}
+
+std::string SoundSymbol::getStrTense(bool isTense) {
+    if (isTense)
+        return "Tense";
+    else
+        return "Lax";
 }
