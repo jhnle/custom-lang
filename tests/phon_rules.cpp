@@ -5,47 +5,47 @@
 
 #include "../ipa/ipa.h"
 
-static std::vector<SoundSymbol> ruleVoicing(
-    std::map<std::string, SoundSymbol> * const soundSymbols,
-    std::vector<SoundSymbol> * const input);
+static std::vector<SoundUnit> ruleVoicing(SoundSystem * const,
+                                          std::vector<SoundUnit> * const);
 
-static std::string getRepresentation(std::vector<SoundSymbol> * const input);
+static std::string getRepresentation(std::vector<SoundUnit> * const);
 
 int main() {
-    std::map<std::string, SoundSymbol> soundSymbols;
-    soundSymbols = getSoundSymbols();
+    SoundSystem soundSystem{};
+    std::map<std::string, Consonant> consonants = soundSystem.getConsonants();
+    std::map<std::string, Vowel> vowels = soundSystem.getVowels();
 
-    std::vector<SoundSymbol> word1 = {
-        soundSymbols["s"],
-        soundSymbols["k"],
-        soundSymbols["æ"],
-        soundSymbols["d"],
-        soundSymbols["s"]
+    std::vector<SoundUnit> word1 = {
+        consonants["s"],
+        consonants["k"],
+        vowels["æ"],
+        consonants["d"],
+        consonants["s"]
     };
 
-    std::vector<SoundSymbol> word2 = {
-        soundSymbols["t"],
-        soundSymbols["æ"],
-        soundSymbols["t"],
-        soundSymbols["s"],
-        soundSymbols["ʌ"],
-        soundSymbols["s"]
+    std::vector<SoundUnit> word2 = {
+        consonants["t"],
+        vowels["æ"],
+        consonants["t"],
+        consonants["s"],
+        vowels["ə"],
+        consonants["s"]
     };
 
-    std::vector<SoundSymbol> word3 = {
-        soundSymbols["s"],
-        soundSymbols["o"],
-        soundSymbols["ʊ"],
-        soundSymbols["g"],
-        soundSymbols["s"],
-        soundSymbols["d"],
-        soundSymbols["i"]
+    std::vector<SoundUnit> word3 = {
+        consonants["s"],
+        vowels["o"],
+        vowels["ʊ"],
+        consonants["g"],
+        consonants["s"],
+        consonants["d"],
+        vowels["i"]
     };
 
     // Phonetic Representation
-    std::vector<SoundSymbol> rep1 = ruleVoicing(&soundSymbols, &word1); //skædz
-    std::vector<SoundSymbol> rep2 = ruleVoicing(&soundSymbols, &word2); //tætsʌs
-    std::vector<SoundSymbol> rep3 = ruleVoicing(&soundSymbols, &word3); //soʊgzdi
+    std::vector<SoundUnit> rep1 = ruleVoicing(&soundSystem, &word1); //skædz
+    std::vector<SoundUnit> rep2 = ruleVoicing(&soundSystem, &word2); //tætsəs
+    std::vector<SoundUnit> rep3 = ruleVoicing(&soundSystem, &word3); //soʊgzdi
 
     std::cout << "/" << getRepresentation(&word1) << "/ --> ["
               << getRepresentation(&rep1)  << "]" << std::endl
@@ -60,7 +60,7 @@ int main() {
 /* Given a vector of sound symbols, return its
  * string representation
  */
-static std::string getRepresentation(std::vector<SoundSymbol> * const input) {
+static std::string getRepresentation(std::vector<SoundUnit> * const input) {
     std::string output = "";
     int len = (*input).size();
 
@@ -73,11 +73,9 @@ static std::string getRepresentation(std::vector<SoundSymbol> * const input) {
 /* Voiceless alveolar fricative becomes voiced if it occurs after a voiced consonant
  * /s/ --> [z] / C_
  */
-static std::vector<SoundSymbol> ruleVoicing(
-    std::map<std::string, SoundSymbol> * const soundSymbols,
-    std::vector<SoundSymbol> * const input) {
-
-    std::vector<SoundSymbol> output;
+static std::vector<SoundUnit> ruleVoicing(SoundSystem * const soundSymbols,
+                                          std::vector<SoundUnit> * const input) {
+    std::vector<SoundUnit> output;
     int len = (*input).size();
 
     for (int i = 0; i < len; i++) {
@@ -89,7 +87,7 @@ static std::vector<SoundSymbol> ruleVoicing(
             && (*input)[i - 1].getType() == CONSONANT
             && (*input)[i - 1].isSymVoiced() == true) {
 
-            output.push_back((*soundSymbols)["z"]);
+            output.push_back(soundSymbols->getConsonants()["z"]);
         } else {
             output.push_back((*input)[i]);
         }
