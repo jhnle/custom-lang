@@ -1,9 +1,6 @@
-#include <iostream>
-#include <string>
-#include <map>
-#include <vector>
-
-#include "../ipa/ipa.h"
+#include "../ipa/soundsystem.h"
+#include "../ipa/consonant.h"
+#include "../ipa/vowel.h"
 
 static std::vector<Phoneme> ruleVoicing(SoundSystem * const,
                                           std::vector<Phoneme> * const);
