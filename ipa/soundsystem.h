@@ -17,9 +17,11 @@
 class SoundSystem {
 private:
     std::string name;
-    std::map<std::string, Consonant> consonants;
-    std::map<std::string, Vowel> vowels;
+    std::map<unsigned int, Consonant> consonants;
+    std::map<unsigned int, Vowel> vowels;
+    std::map<std::string, unsigned int> ids;
 
+    int getDiacriticFromStr(std::string) const;
     int getBoolFromStr(std::string) const;
     int getPlaceFromStr(std::string) const;
     int getMannerFromStr(std::string) const;
@@ -53,11 +55,14 @@ public:
                         int place = getPlaceFromStr(tokens[3]);
                         int manner = getMannerFromStr(tokens[4]);
                         int isPulmonic = getBoolFromStr(tokens[5]);
+                        int diacritic = getDiacriticFromStr(tokens[6]);
 
                         // Insert consonant only if all fields are valid
-                        if (tokens[0] != "" && isVoiced != -1 && place != -1 && manner != -1 && isPulmonic != -1) {
-                            Consonant consonant(tokens[0], (bool)isVoiced, (Place)place, (Manner)manner, (bool)isPulmonic);
-                            consonants.insert(std::pair<std::string, Consonant>(tokens[0], consonant));
+                        if (isVoiced != -1 && place != -1 && manner != -1 && isPulmonic != -1) {
+                            Consonant consonant(tokens[0], (bool)isVoiced, (Place)place, (Manner)manner, (Diacritic)diacritic, (bool)isPulmonic);
+
+                            consonants.insert(std::pair<unsigned int, Consonant>(consonant.getId(), consonant));
+                            ids.insert(std::pair<std::string, unsigned int>(tokens[0], consonant.getId()));
                         } else {
                             std::cerr << "Could not add the consonant [" << tokens[0] << "]" << std::endl;
                         }
@@ -68,11 +73,14 @@ public:
                         int part = getPartFromStr(tokens[4]);
                         int isRounded = getBoolFromStr(tokens[5]);
                         int isTense = getBoolFromStr(tokens[6]);
+                        int diacritic = getDiacriticFromStr(tokens[7]);
 
                         // Insert vowel only if all fields are valid
-                        if (tokens[0] != "" && isVoiced != -1 && height != -1 && part != -1 && isRounded != -1 && isTense != -1) {
-                            Vowel vowel(tokens[0], (bool)isVoiced, (Height)height, (Part)part, (bool)isRounded, (bool)isTense);
-                            vowels.insert(std::pair<std::string, Vowel>(tokens[0], vowel));
+                        if (isVoiced != -1 && height != -1 && part != -1 && isRounded != -1 && isTense != -1) {
+                            Vowel vowel(tokens[0], (bool)isVoiced, (Height)height, (Part)part, (Diacritic)diacritic, (bool)isRounded, (bool)isTense);
+
+                            vowels.insert(std::pair<unsigned int, Vowel>(vowel.getId(), vowel));
+                            ids.insert(std::pair<std::string, unsigned int>(tokens[0], vowel.getId()));
                         } else {
                             std::cerr << "Could not add the vowel [" << tokens[0] << "]\n";
                         }
@@ -89,8 +97,9 @@ public:
         }
     }
 
-    std::map<std::string, Consonant> getConsonants() const { return consonants; }
-    std::map<std::string, Vowel> getVowels() const { return vowels; }
+    std::map<unsigned int, Consonant> getConsonants() const { return consonants; }
+    std::map<unsigned int, Vowel> getVowels() const { return vowels; }
+    std::map<std::string, unsigned int> getIds() const { return ids; }
 };
 
 #endif

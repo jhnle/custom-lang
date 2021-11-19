@@ -12,17 +12,18 @@ private:
     std::string getStrPlace (Place) const;
     std::string getStrManner (Manner) const;
 public:
-    Consonant(std::string symbol, bool isVoiced, Place place,
-                Manner manner, bool isPulmonic) {
-
+    Consonant(std::string symbol, bool isVoiced, Place place, Manner manner, Diacritic diacritic, bool isPulmonic) {
         type = CONSONANT;
+        this->diacritic = diacritic;
         this->symbol = symbol;
         this->isVoiced = isVoiced;
         this->place = place;
         this->manner = manner;
         this->isPulmonic = isPulmonic;
 
-        desc += getStrVoiced(isVoiced) + " " + getStrPlace(place)
+        id = (diacritic * 0x10000) + (manner * 0x1000) + (place * 0x100) + (isVoiced * 0x10) + (CONSONANT + 1);
+
+        desc += ((isPulmonic) ? getStrVoiced(isVoiced) + " " : "") + getStrPlace(place)
                 + " " + getStrManner(manner);
     }
 

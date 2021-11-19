@@ -2,92 +2,176 @@
 #include "../ipa/consonant.h"
 #include "../ipa/vowel.h"
 
-static std::vector<Phoneme> ruleVoicing(SoundSystem * const,
-                                          std::vector<Phoneme> * const);
+static std::string getRepresentation(std::map<unsigned int, Consonant>&,
+                                     std::map<unsigned int, Vowel>&,
+                                     std::vector<unsigned int>&);
 
-static std::string getRepresentation(std::vector<Phoneme> * const);
+static std::vector<unsigned int> ruleVoicing(std::map<std::string, unsigned int>&,
+                                             std::map<unsigned int, Consonant>&,
+                                             std::vector<unsigned int>&);
+
+static std::vector<unsigned int> rulePlosive(std::map<unsigned int, Consonant>&,
+                                             std::vector<unsigned int>&);
 
 int main() {
     SoundSystem soundSystem{};
-    std::map<std::string, Consonant> consonants = soundSystem.getConsonants();
-    std::map<std::string, Vowel> vowels = soundSystem.getVowels();
+    std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();
+    std::map<unsigned int, Vowel> vowels = soundSystem.getVowels();
+    std::map<std::string, unsigned int> ids = soundSystem.getIds();
 
-    std::vector<Phoneme> word1 = {
-        consonants["s"],
-        consonants["k"],
-        vowels["æ"],
-        consonants["d"],
-        consonants["s"]
+    /* Use ids map to retrieve phoneme given a symbol,
+     * ids may change in the future
+     */
+    std::vector<unsigned int> word1 = {
+        ids["s"],
+        ids["k"],
+        ids["æ"],
+        ids["d"],
+        ids["s"]
     };
 
-    std::vector<Phoneme> word2 = {
-        consonants["t"],
-        vowels["æ"],
-        consonants["t"],
-        consonants["s"],
-        vowels["ə"],
-        consonants["s"]
+    std::vector<unsigned int> word2 = {
+        ids["t"],
+        ids["æ"],
+        ids["t"],
+        ids["s"],
+        ids["ə"],
+        ids["s"]
     };
 
-    std::vector<Phoneme> word3 = {
-        consonants["s"],
-        vowels["o"],
-        vowels["ʊ"],
-        consonants["g"],
-        consonants["s"],
-        consonants["d"],
-        vowels["i"]
+    std::vector<unsigned int> word3 = {
+        ids["s"],
+        ids["o"],
+        ids["ʊ"],
+        ids["g"],
+        ids["s"],
+        ids["d"],
+        ids["i"]
     };
 
-    // Phonetic Representation
-    std::vector<Phoneme> rep1 = ruleVoicing(&soundSystem, &word1); //skædz
-    std::vector<Phoneme> rep2 = ruleVoicing(&soundSystem, &word2); //tætsəs
-    std::vector<Phoneme> rep3 = ruleVoicing(&soundSystem, &word3); //soʊgzdi
+    std::vector<unsigned int> word4 = {
+        ids["ŋ"],
+        ids["ɑ"],
+        ids["m"],
+        ids["n"],
+        ids["ə"],
+        ids["l"]
+    };
 
-    std::cout << "/" << getRepresentation(&word1) << "/ --> ["
-              << getRepresentation(&rep1)  << "]" << std::endl
-              << "/" << getRepresentation(&word2) << "/ --> ["
-              << getRepresentation(&rep2)  << "]" << std::endl
-              << "/" << getRepresentation(&word3) << "/ --> ["
-              << getRepresentation(&rep3)  << "]" << std::endl;
+    std::vector<unsigned int> word5 = {
+        ids["θ"],
+        ids["o"],
+        ids["ʊ"],
+        ids["b"],
+        ids["n"],
+        ids["ɑ"]
+    };
+
+    // Apply voicing rule
+    std::vector<unsigned int> rep1 = ruleVoicing(ids, consonants, word1); // skædz
+    std::vector<unsigned int> rep2 = ruleVoicing(ids, consonants, word2); // tætsəs
+    std::vector<unsigned int> rep3 = ruleVoicing(ids, consonants, word3); // soʊgzdi
+
+    // Apply plosive rule
+    std::vector<unsigned int> rep4 = rulePlosive(consonants, word4); // gɑmdəl
+    std::vector<unsigned int> rep5 = rulePlosive(consonants, word5); // θoʊbdɑ
+
+    std::cout << "/s/ --> [z] / C_\n"
+              << "/" << getRepresentation(consonants, vowels, word1) << "/ --> ["
+              << getRepresentation(consonants, vowels, rep1)  << "]\n"
+              << "/" << getRepresentation(consonants, vowels, word2) << "/ --> ["
+              << getRepresentation(consonants, vowels, rep2)  << "]\n"
+              << "/" << getRepresentation(consonants, vowels, word3) << "/ --> ["
+              << getRepresentation(consonants, vowels, rep3)  << "]\n";
+
+    std::cout << "\n/nasal/ --> [plosive] / _V\n"
+              << "/" << getRepresentation(consonants, vowels, word4) << "/ --> ["
+              << getRepresentation(consonants, vowels, rep4)  << "]\n"
+              << "/" << getRepresentation(consonants, vowels, word5) << "/ --> ["
+              << getRepresentation(consonants, vowels, rep5)  << "]\n";
 
     return 0;
 }
 
-/* Given a vector of sound symbols, return its
- * string representation
+/*
+ * Given a vector of phonemes, print out their symbols
  */
-static std::string getRepresentation(std::vector<Phoneme> * const input) {
-    std::string output = "";
-    int len = (*input).size();
+static std::string getRepresentation(std::map<unsigned int, Consonant>& consonants,
+                                     std::map<unsigned int, Vowel>& vowels,
+                                     std::vector<unsigned int>& word) {
 
-    for (int i = 0; i < len; i++) {
-        output += (*input)[i].getSymbol();
+    std::string output = "";
+
+    for(const auto& phoneme: word) {
+
+        // Calculate if phoneme is consonant or vowel
+        if(phoneme % 0x10 == 1) {
+            output += consonants[phoneme].getSymbol();
+        } else {
+            output += vowels[phoneme].getSymbol();
+        }
     }
+
     return output;
 }
+
 
 /* Voiceless alveolar fricative becomes voiced if it occurs after a voiced consonant
  * /s/ --> [z] / C_
  */
-static std::vector<Phoneme> ruleVoicing(SoundSystem * const soundSymbols,
-                                          std::vector<Phoneme> * const input) {
-    std::vector<Phoneme> output;
-    int len = (*input).size();
+static std::vector<unsigned int> ruleVoicing(std::map<std::string, unsigned int>& ids,
+                                             std::map<unsigned int, Consonant>& consonants,
+                                             std::vector<unsigned int>& word) {
+    std::vector<unsigned int> output;
+    int len = word.size();
 
-    for (int i = 0; i < len; i++) {
-        // Check if current symbol is a voiceless alveolar fricative,
-        // if there is a symbol before it,
-        // if the preceeding symbol is a consonant,
-        // and if the preceeding symbol is voiced
-        if ((*input)[i].getSymbol() == "s" && (i - 1) >= 0
-            && (*input)[i - 1].getType() == CONSONANT
-            && (*input)[i - 1].isSymVoiced() == true) {
+    for(int i = 0; i < len; i ++) {
+        unsigned int curId = word[i];
 
-            output.push_back(soundSymbols->getConsonants()["z"]);
-        } else {
-            output.push_back((*input)[i]);
+        /* Check if there is a phoneme before current position,
+         * if current phoneme is a voiceless alveolar fricative,
+         * and if the preceeding symbol is a voiced consonant,
+         */
+        if (i - 1 > 0 && consonants[curId].getSymbol() == "s"
+            && word[i - 1] % 0x100 == 0x11) {
+            // Add voicing
+            curId += 0x10;
         }
+        output.push_back(curId);
     }
+
+    return output;
+}
+
+/* Nasal becomes plosive if it occurs before a vowel
+ * /nasal/ --> [plosive] / _V
+ */
+static std::vector<unsigned int> rulePlosive(std::map<unsigned int, Consonant>& consonants,
+                                             std::vector<unsigned int>& word) {
+    std::vector<unsigned int> output;
+    int len = word.size();
+
+    for(int i = 0; i < len; i ++) {
+        unsigned int curID = word[i];
+
+        /* Check if there is a phoneme after current position,
+         * if current phoneme is nasal consonant,
+         * and if the proceeding symbol is a vowel
+         */
+        if (i + 1 < len && curID % 0x10 == 0x1
+            && curID % 0x10000 / 0x1000 == NASAL
+            && word[i + 1] % 0x10 == 0x2) {
+
+            // Turn plosive
+            unsigned int tempID = curID + ((PLOSIVE - NASAL) * 0x1000);
+
+            // Change id only if corresponding plosive exists
+            if (consonants.find(curID) != consonants.end()) {
+                curID = tempID;
+            }
+        }
+        output.push_back(curID);
+    }
+
     return output;
 }
