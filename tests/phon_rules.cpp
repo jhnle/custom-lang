@@ -14,7 +14,9 @@ static std::vector<unsigned int> rulePlosive(std::map<unsigned int, Consonant>&,
                                              std::vector<unsigned int>&);
 
 int main() {
-    SoundSystem soundSystem{};
+    SoundSystem soundSystem("phon_rules");
+    soundSystem.load();
+
     std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();
     std::map<unsigned int, Vowel> vowels = soundSystem.getVowels();
     std::map<std::string, unsigned int> ids = soundSystem.getIds();
@@ -115,8 +117,7 @@ static std::string getRepresentation(std::map<unsigned int, Consonant>& consonan
     return output;
 }
 
-
-/* Voiceless alveolar fricative becomes voiced if it occurs after a voiced consonant
+/* Voiceless alveolar fricative becom es voiced if it occurs after a voiced consonant
  * /s/ --> [z] / C_
  */
 static std::vector<unsigned int> ruleVoicing(std::map<std::string, unsigned int>& ids,

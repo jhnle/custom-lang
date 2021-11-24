@@ -26,7 +26,7 @@ public:
         this->isRounded = isRounded;
         this->isTense = isTense;
 
-        id = (diacritic * 0x100000) + (isTense * 0x10000) + (isRounded * 0x1000) + (part * 0x100) + (height * 0x10) + (VOWEL + 1);
+        id = (diacritic * 0x100000) + (isTense * 0x10000) + (isRounded * 0x1000) + (part * 0x100) + (height * 0x10) + (VOWEL);
 
         desc += ((!isVoiced) ? getStrVoiced(isVoiced) + " " : "") + getStrHeight(height) + " "
                 + getStrPart(part) + " " + getStrRounded(isRounded) + " "

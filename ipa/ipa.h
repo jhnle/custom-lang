@@ -1,8 +1,9 @@
 #ifndef IPA_H
 #define IPA_H
 
+/* Start at 1 to prevent id = 0 */
 enum Type {
-    CONSONANT,
+    CONSONANT = 1,
     VOWEL
 };
 

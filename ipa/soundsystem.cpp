@@ -14,156 +14,132 @@ bool SoundSystem::isValidSym(std::string str) const{
     }
 }
 
-/* Returns 1 if true, 0 if false, -1 if neither */
-int SoundSystem::getBoolFromStr(std::string str) const{
-    if (str == "TRUE") {
-        return 1;
-    } else if (str == "FALSE") {
-        return 0;
-    } else {
-        return -1;
+/* Save all phonemes into a csv with the same name
+ * as the soundsystem
+ *
+ * Return true if file couldnt be opened, consonants is empty, or vowels is empty
+ * Return false otherwise
+ */
+bool SoundSystem::save() {
+    std::ofstream phonemes("ipa/" + name + ".csv");
+
+    if (!phonemes.is_open()) {
+        return true;
     }
+
+    if (consonants.size() == 0 || vowels.size() == 0) {
+        std::cerr << "Cannot save " << name << ".csv, consonants and/or vowels is empty.\n";
+        return true;
+    }
+
+    // Save consonants
+    for (auto const& phon: consonants) {
+        phonemes << phon.second.getSymbol() << "," << std::hex << phon.second.getId() << "\n";
+    }
+
+    // Save vowels
+    for (auto const& phon: vowels) {
+        phonemes << phon.second.getSymbol() << "," << std::hex << phon.second.getId() << "\n";
+    }
+    return false;
 }
 
-int SoundSystem::getDiacriticFromStr(std::string str) const{
-    static std::map<std::string, Diacritic> diacs {
-        {"VOICELESS", VOICELESS},
-        {"VOICED", VOICED},
-        {"ASPIRATED", ASPIRATED},
-        {"MORE_ROUNDED", MORE_ROUNDED},
-        {"LESS_ROUNDED", LESS_ROUNDED},
-        {"ADVANCED", ADVANCED},
-        {"RETRACTED", RETRACTED},
-        {"CENTRALIZED", CENTRALIZED},
-        {"MID_CENTRALIZED", MID_CENTRALIZED},
-        {"SYLLABIC", SYLLABIC},
-        {"NON_SYLLABIC", NON_SYLLABIC},
-        {"RHOTICITY", RHOTICITY},
-        {"BREATHY_VOICED", BREATHY_VOICED},
-        {"CREAKY_VOICED", CREAKY_VOICED},
-        {"LINGUOLABIAL", LINGUOLABIAL},
-        {"LABIALIZED", LABIALIZED},
-        {"PALATALIZED", PALATALIZED},
-        {"VELARIZED", VELARIZED},
-        {"PHARYNGEALIZED", PHARYNGEALIZED},
-        {"VEL_PHA", VEL_PHA},
-        {"RAISED", RAISED},
-        {"LOWERED", LOWERED},
-        {"ADV_TONGUE_ROOT", ADV_TONGUE_ROOT},
-        {"RET_TONGUE_ROOT", RET_TONGUE_ROOT},
-        {"D_DENTAL", D_DENTAL},
-        {"LAMINAL", LAMINAL},
-        {"NASALIZED", NASALIZED},
-        {"D_EJECTIVE", D_EJECTIVE},
-        {"NASAL_REL", NASAL_REL},
-        {"LAT_REL", LAT_REL},
-        {"NO_AUD_REL", NO_AUD_REL}
-    };
+/* Load phonemes from a csv with the same name
+ * as the soundsystem
+ *
+ * Return true if file couldnt be opened
+ * Return false otherwise
+ */
+bool SoundSystem::load() {
+    std::ifstream phonemes("ipa/" + name + ".csv");
 
-    std::map<std::string, Diacritic>::iterator it;
-
-    it = diacs.find(str);
-    if (it != diacs.end()) {
-        return it->second;
-    } else {
-        return 0;
+    if (!phonemes.is_open()) {
+        return true;
     }
-}
 
-int SoundSystem::getPlaceFromStr(std::string str) const{
-    static std::map<std::string, Place> places {
-        {"BILABIAL", BILABIAL},
-        {"LABIODENTAL", LABIODENTAL},
-        {"DENTAL", DENTAL},
-        {"ALVEOLAR", ALVEOLAR},
-        {"POST_ALVEOLAR", POST_ALVEOLAR},
-        {"RETROFLEX", RETROFLEX},
-        {"LABIALIZED_PALATAL", LABIALIZED_PALATAL},
-        {"POSTALVEOLAR_VELAR", POSTALVEOLAR_VELAR},
-        {"ALVEOLO_PALATAL", ALVEOLO_PALATAL},
-        {"PALATAL", PALATAL},
-        {"LABIAL_VELAR", LABIAL_VELAR},
-        {"VELAR", VELAR},
-        {"UVULAR", UVULAR},
-        {"PHARYNGEAL", PHARYNGEAL},
-        {"EPIGLOTTAL", EPIGLOTTAL},
-        {"GLOTTAL", GLOTTAL}
-    };
+    // Read each line in file
+    std::string line;
+    while (getline(phonemes, line)) {
+        std::vector<std::string> tokens;
+        std::stringstream ss(line);
+        std::string token;
 
-    std::map<std::string, Place>::iterator it;
+        // Tokenize line
+        while(getline(ss, token, ',')) {
+            tokens.push_back(token);
+        }
 
-    it = places.find(str);
-    if (it != places.end()) {
-        return it->second;
-    } else {
-        return -1;
+        // Check if line has correct amount of values
+        if (tokens.size() != 2) {
+            std::cerr << "Invalid amount of values: " << tokens.size() << "\n";
+            continue; // Skip to next line
+        }
+
+        // Check if phoneme symbol is valid. If not, do not attempt to insert it.
+        if (isValidSym(tokens[0]) == false) {
+            std::cerr << "The symbol [" << tokens[0] << "] is invalid\n";
+            continue; // Skip to next line
+        }
+
+        // Try to convert id from string to unsigned int
+        unsigned int id;
+        try {
+            id = std::stoi(tokens[1], nullptr, 16);
+        } catch (...) {
+            std::cerr << "Could not convert '" << tokens[1] << "' into an integer id\n";
+            continue; // Skip to next line
+        }
+
+        // Insert based on type
+        if (id % 0x10 == CONSONANT) {
+            // Get fields from id
+            unsigned int isVoiced = (id % 0x100 / 0x10);                  // _T
+            Place place = (Place)(id % 0x1000 / 0x100);                   // _VT
+            Manner manner = (Manner)(id % 0x10000 / 0x1000);              // _PVT
+            Diacritic diacritic = (Diacritic)(id % 0x1000000 / 0x10000);  // __MPVT
+
+            // Check if id is valid
+            if (isVoiced < 0 || isVoiced > 1
+                || place < BILABIAL || place > GLOTTAL
+                || manner < PLOSIVE || manner > LAT_CLICK
+                || diacritic < 0 || diacritic > NO_AUD_REL) {
+
+                std::cerr << "Could not add the consonant [" << tokens[0] << "] with id " << std::hex << id << "\n";
+            } else {
+                // Insert Consonant
+                Consonant consonant(tokens[0], isVoiced, place, manner, diacritic);
+
+                consonants.insert(std::pair<unsigned int, Consonant>(id, consonant));
+                ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
+            }
+        } else if (id % 0x10 == VOWEL) {
+            // Get fields from id
+            unsigned int isVoiced = true;
+            Height height = (Height)(id % 0x100 / 0x10);                    // _T
+            Part part = (Part)(id % 0x1000 / 0x100);                        // _HT
+            unsigned int isRounded = (id % 0x10000 / 0x1000);               // _PHT
+            unsigned int isTense = (id % 0x100000 / 0x10000);               // _RPHT
+            Diacritic diacritic = (Diacritic)(id % 0x10000000 / 0x100000);  // __TRPHT
+
+            // Insert only if id is valid
+            if (isVoiced < 0 || isVoiced > 1
+                || height > OPEN
+                || part > BACK
+                || isRounded < 0 || isRounded > 1
+                || isTense < 0 || isTense > 1
+                || diacritic < 0 || diacritic > NO_AUD_REL) {
+
+                std::cerr << "Could not add the vowel [" << tokens[0] << "] with id " << std::hex << id << "\n";
+            } else {
+                // Insert vowel
+                Vowel vowel(tokens[0], isVoiced, height, part, diacritic, isRounded, isTense);
+
+                vowels.insert(std::pair<unsigned int, Vowel>(id, vowel));
+                ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
+            }
+        } else {
+            std::cerr << std::hex << id % 0x10 << " is not a valid type.\n";
+        }
     }
-}
-
-int SoundSystem::getMannerFromStr(std::string str) const{
-    static std::map<std::string, Manner> manners {
-        {"PLOSIVE", PLOSIVE},
-        {"IMPLOSIVE", IMPLOSIVE},
-        {"EJECTIVE", EJECTIVE},
-        {"NASAL", NASAL},
-        {"TRILL", TRILL},
-        {"FLAP", FLAP},
-        {"LAT_FLAP", LAT_FLAP},
-        {"FRICATIVE", FRICATIVE},
-        {"LAT_FRICATIVE", LAT_FRICATIVE},
-        {"EJEC_FRICATIVE", EJEC_FRICATIVE},
-        {"EJEC_LAT_FRICATIVE", EJEC_LAT_FRICATIVE},
-        {"AFFRICATE", AFFRICATE},
-        {"APPROXIMANT", APPROXIMANT},
-        {"LAT_APPROXIMANT", LAT_APPROXIMANT},
-        {"CLICK", CLICK},
-        {"LAT_CLICK", LAT_CLICK}
-    };
-
-    std::map<std::string, Manner>::iterator it;
-
-    it = manners.find(str);
-    if (it != manners.end()) {
-        return it->second;
-    } else {
-        return -1;
-    }
-}
-
-int SoundSystem::getHeightFromStr(std::string str) const{
-    static std::map<std::string, Height> heights {
-        {"CLOSE", CLOSE},
-        {"NEAR_CLOSE", NEAR_CLOSE},
-        {"CLOSE_MID", CLOSE_MID},
-        {"MID", MID},
-        {"OPEN_MID", OPEN_MID},
-        {"NEAR_OPEN", NEAR_OPEN},
-        {"OPEN", OPEN}
-    };
-
-    std::map<std::string, Height>::iterator it;
-
-    it = heights.find(str);
-    if (it != heights.end()) {
-        return it->second;
-    } else {
-        return -1;
-    }
-}
-
-int SoundSystem::getPartFromStr(std::string str) const{
-    static std::map<std::string, Part> parts {
-        {"FRONT", FRONT},
-        {"CENTRAL", CENTRAL},
-        {"BACK", BACK}
-    };
-
-    std::map<std::string, Part>::iterator it;
-
-    it = parts.find(str);
-    if (it != parts.end()) {
-        return it->second;
-    } else {
-        return -1;
-    }
+    return false;
 }

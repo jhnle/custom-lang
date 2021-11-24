@@ -6,7 +6,9 @@
 
 int main() {
 
-    SoundSystem soundSystem{};
+    SoundSystem soundSystem("print_all");
+    soundSystem.load();
+
     std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();
     std::map<unsigned int, Vowel> vowels = soundSystem.getVowels();
 
@@ -22,5 +24,8 @@ int main() {
                   << " [" << sym.second.getSymbol() << "] " << sym.second.getDesc() << std::endl;
     }
 
+
+    // Saving will delete any invalid phonemes from the file
+    soundSystem.save();
     return 0;
 }
