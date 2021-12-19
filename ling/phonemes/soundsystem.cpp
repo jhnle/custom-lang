@@ -14,21 +14,20 @@ bool SoundSystem::isValidSym(std::string str) const{
     }
 }
 
-/* Save all phonemes into a csv with the same name
- * as the soundsystem
+/* Save all phonemes into a csv for the corresponding language
  *
  * Return true if file couldnt be opened, consonants is empty, or vowels is empty
  * Return false otherwise
  */
 bool SoundSystem::save() {
-    std::ofstream phonemes("ipa/" + name + ".csv");
+    std::ofstream phonemes("langs/" + name + "/phonemes.csv");
 
     if (!phonemes.is_open()) {
         return true;
     }
 
     if (consonants.size() == 0 || vowels.size() == 0) {
-        std::cerr << "Cannot save " << name << ".csv, consonants and/or vowels is empty.\n";
+        std::cerr << "Cannot save " << name << " phonemes, consonants and/or vowels is empty.\n";
         return true;
     }
 
@@ -50,14 +49,13 @@ bool SoundSystem::save() {
     return false;
 }
 
-/* Load phonemes from a csv with the same name
- * as the soundsystem
+/* Load phonemes from a csv from the corresponding language
  *
  * Return true if file couldnt be opened
  * Return false otherwise
  */
 bool SoundSystem::load() {
-    std::ifstream phonemes("ipa/" + name + ".csv");
+    std::ifstream phonemes("langs/" + name + "/phonemes.csv");
 
     if (!phonemes.is_open()) {
         return true;

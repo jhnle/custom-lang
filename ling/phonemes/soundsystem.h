@@ -7,8 +7,8 @@
 #include <map>
 #include <vector>
 
-#include "../ipa/consonant.h"
-#include "../ipa/vowel.h"
+#include "consonant.h"
+#include "vowel.h"
 
 #define MAX_PHONEME_LENGTH 10
 

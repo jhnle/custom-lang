@@ -1,6 +1,6 @@
-#include "../ipa/soundsystem.h"
-#include "../ipa/consonant.h"
-#include "../ipa/vowel.h"
+#include "../ling/phonemes/soundsystem.h"
+#include "../ling/phonemes/consonant.h"
+#include "../ling/phonemes/vowel.h"
 
 static std::string getRepresentation(std::map<unsigned int, Consonant>&,
                                      std::map<unsigned int, Vowel>&,
@@ -14,7 +14,7 @@ static std::vector<unsigned int> rulePlosive(std::map<unsigned int, Consonant>&,
                                              std::vector<unsigned int>&);
 
 int main() {
-    SoundSystem soundSystem("phon_rules");
+    SoundSystem soundSystem("preset00");
     soundSystem.load();
 
     std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();

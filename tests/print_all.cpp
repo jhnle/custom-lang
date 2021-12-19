@@ -1,12 +1,12 @@
 #include <iomanip>
 
-#include "../ipa/soundsystem.h"
-#include "../ipa/consonant.h"
-#include "../ipa/vowel.h"
+#include "../ling/phonemes/soundsystem.h"
+#include "../ling/phonemes/consonant.h"
+#include "../ling/phonemes/vowel.h"
 
 int main() {
 
-    SoundSystem soundSystem("print_all");
+    SoundSystem soundSystem("preset00");
     soundSystem.load();
 
     std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();

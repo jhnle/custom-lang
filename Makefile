@@ -7,10 +7,10 @@ PROGS = print_all phon_rules
 all: $(PROGS)
 
 clean:
-	rm -f $(PROGS) tests/*.o ipa/*.o
+	rm -f $(PROGS) tests/*.o ling/phonemes/*.o
 
-print_all: tests/print_all.o ipa/soundsystem.o ipa/phoneme.o ipa/consonant.o ipa/vowel.o
-	$(CC) $(CFLAGS) tests/print_all.cpp ipa/soundsystem.cpp ipa/phoneme.cpp ipa/consonant.cpp ipa/vowel.cpp -o print_all
+print_all: tests/print_all.o ling/phonemes/soundsystem.o ling/phonemes/phoneme.o ling/phonemes/consonant.o ling/phonemes/vowel.o
+	$(CC) $(CFLAGS) tests/print_all.cpp ling/phonemes/soundsystem.cpp ling/phonemes/phoneme.cpp ling/phonemes/consonant.cpp ling/phonemes/vowel.cpp -o print_all
 
-phon_rules: tests/phon_rules.o ipa/soundsystem.o ipa/phoneme.o ipa/consonant.o ipa/vowel.o
-	$(CC) $(CFLAGS) tests/phon_rules.cpp ipa/soundsystem.cpp ipa/phoneme.cpp ipa/consonant.cpp ipa/vowel.cpp -o phon_rules
+phon_rules: tests/phon_rules.o ling/phonemes/soundsystem.o ling/phonemes/phoneme.o ling/phonemes/consonant.o ling/phonemes/vowel.o
+	$(CC) $(CFLAGS) tests/phon_rules.cpp ling/phonemes/soundsystem.cpp ling/phonemes/phoneme.cpp ling/phonemes/consonant.cpp ling/phonemes/vowel.cpp -o phon_rules
