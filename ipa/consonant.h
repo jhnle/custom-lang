@@ -5,36 +5,32 @@
 
 class Consonant : public Phoneme {
 private:
-    Place place;
-    Manner manner;
-    bool isPulmonic;
-
     std::string getStrPlace (Place) const;
     std::string getStrManner (Manner) const;
+    std::string getStrArt (Articulation) const;
+    std::string getStrRel (Release) const;
 public:
-    Consonant(std::string symbol, bool isVoiced, Place place, Manner manner, Diacritic diacritic) {
+    Consonant(std::string symbol, float freq, Place place, Manner manner, Voicing voicing,
+              Coarticulation coarticulation, Articulation articulation, Release release, bool isSyllabic) {
+
         type = CONSONANT;
-        this->diacritic = diacritic;
         this->symbol = symbol;
-        this->isVoiced = isVoiced;
-        this->place = place;
-        this->manner = manner;
-        this->isPulmonic = (manner != EJECTIVE
-            && manner != EJEC_FRICATIVE
-            && manner != EJEC_LAT_FRICATIVE
-            && manner < CLICK) ? true: false;
+        this->freq = freq;
 
-        id = (diacritic * 0x10000) + (manner * 0x1000) + (place * 0x100) + (isVoiced * 0x10) + (CONSONANT);
+        // Syllabic|Release|Art|Coart|Voicing|Manner|Place|Type
+        id = (isSyllabic * 0x10000000) + (release * 0x1000000) + (articulation * 0x100000) + (coarticulation * 0x10000)
+             + (voicing * 0x1000) + (manner * 0x100) + (place * 0x10) + (CONSONANT);
 
-        desc += ((isPulmonic) ? getStrVoiced(isVoiced) + " " : "") + getStrPlace(place)
-                + " " + getStrManner(manner);
+        std::string rel = getStrRel(release);
+        std::string art = getStrArt(articulation);
+        std::string coart = getStrCoart(coarticulation);
+        std::string voic = getStrVoicing(voicing);
+
+        desc += (isSyllabic ? "Syllabic " : "") + std::string(rel != "" ? rel + " " : "") + (art != "" ? art + " " : "")
+                + (coart != "" ? coart + " " : "") + (voic != "" ? voic + " " : "") + getStrPlace(place) + " " + getStrManner(manner);
     }
 
     Consonant() {}
-
-    Place getPlace() const { return place; }
-    Manner getManner() const { return manner; }
-    bool isSymPulmonic() const { return isPulmonic; }
 };
 
 #endif

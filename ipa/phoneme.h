@@ -9,20 +9,19 @@
 class Phoneme {
 protected:
     Type type;
-    Diacritic diacritic;
     unsigned int id;
+    float freq;
     std::string symbol;
     std::string desc;
-    bool isVoiced;
+
+    std::string getStrVoicing (Voicing) const;
+    std::string getStrCoart (Coarticulation) const;
 public:
     Type getType() const { return type; }
-    Diacritic getDiacritic() const { return diacritic; }
     unsigned int getId() const { return id; }
+    float getFreq() const { return freq; }
     std::string getSymbol() const { return symbol; }
     std::string getDesc() const { return desc; }
-    bool isSymVoiced() const { return isVoiced; }
-
-    std::string getStrVoiced (bool) const;
 };
 
 #endif

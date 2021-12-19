@@ -34,13 +34,19 @@ bool SoundSystem::save() {
 
     // Save consonants
     for (auto const& phon: consonants) {
-        phonemes << phon.second.getSymbol() << "," << std::hex << phon.second.getId() << "\n";
+        phonemes << phon.second.getSymbol() << ","
+                 << std::hex << phon.second.getId() << ","
+                 << std::dec << phon.second.getFreq() << "\n";
     }
 
     // Save vowels
     for (auto const& phon: vowels) {
-        phonemes << phon.second.getSymbol() << "," << std::hex << phon.second.getId() << "\n";
+        phonemes << phon.second.getSymbol() << ","
+                 << std::hex << phon.second.getId() << ","
+                 << std::dec << phon.second.getFreq() << "\n";
     }
+
+    phonemes.close();
     return false;
 }
 
@@ -57,6 +63,10 @@ bool SoundSystem::load() {
         return true;
     }
 
+    // Keep track of frequency, both cannot be over 1
+    float totConFreq = 0;
+    float totVowFreq = 0;
+
     // Read each line in file
     std::string line;
     while (getline(phonemes, line)) {
@@ -70,7 +80,7 @@ bool SoundSystem::load() {
         }
 
         // Check if line has correct amount of values
-        if (tokens.size() != 2) {
+        if (tokens.size() != 3) {
             std::cerr << "Invalid amount of values: " << tokens.size() << "\n";
             continue; // Skip to next line
         }
@@ -90,56 +100,102 @@ bool SoundSystem::load() {
             continue; // Skip to next line
         }
 
+        // Try to convert frequency from string to float
+        float freq;
+        try {
+            freq = std::stof(tokens[2], nullptr);
+        } catch (...) {
+            std::cerr << "Could not convert '" << tokens[2] << "' into a float\n";
+            continue; // Skip to next line
+        }
+
+        int type = id % 0x10;
+
+        // Add frequency %, do not add phoneme if % exceeds 1
+        if (type == CONSONANT) {
+
+            // Check if adding causes total % to exceed 1
+            if (totConFreq + freq <= 1) {
+                totConFreq += freq;
+            } else {
+                std::cerr << "Cannot add any more consonants, total consonant relative frequency > 1\n";
+            }
+        } else if (type == VOWEL) {
+
+            // Check if adding causes total % to exceed 1
+            if (totVowFreq + freq <= 1) {
+                totVowFreq += freq;
+            } else {
+                std::cerr << "Cannot add any more vowels, total vowel relative frequency > 1\n";
+            }
+        } else {
+
+            // ID does not denote a valid type, skip to next line
+            std::cerr << std::hex << id % 0x10 << " is not a valid type.\n";
+            continue;
+        }
+
         // Insert based on type
         if (id % 0x10 == CONSONANT) {
             // Get fields from id
-            unsigned int isVoiced = (id % 0x100 / 0x10);                  // _T
-            Place place = (Place)(id % 0x1000 / 0x100);                   // _VT
-            Manner manner = (Manner)(id % 0x10000 / 0x1000);              // _PVT
-            Diacritic diacritic = (Diacritic)(id % 0x1000000 / 0x10000);  // __MPVT
+            Place place = (Place)(id % 0x100 / 0x10);
+            Manner manner = (Manner)(id % 0x1000 / 0x100);
+            Voicing voicing = (Voicing)(id % 0x10000 / 0x1000);
+            Coarticulation coarticulation = (Coarticulation)(id % 0x100000 / 0x10000);
+            Articulation articulation = (Articulation)(id % 0x1000000 / 0x100000);
+            Release release = (Release)(id % 0x10000000 / 0x1000000);
+            unsigned int isSyllabic = (id % 0x100000000 / 0x10000000);
 
             // Check if id is valid
-            if (isVoiced < 0 || isVoiced > 1
+            if (voicing < 0         || voicing > VOICED
                 || place < BILABIAL || place > GLOTTAL
                 || manner < PLOSIVE || manner > LAT_CLICK
-                || diacritic < 0 || diacritic > NO_AUD_REL) {
+                || isSyllabic < 0   || isSyllabic > 1) {
 
                 std::cerr << "Could not add the consonant [" << tokens[0] << "] with id " << std::hex << id << "\n";
             } else {
                 // Insert Consonant
-                Consonant consonant(tokens[0], isVoiced, place, manner, diacritic);
+                Consonant consonant(tokens[0], freq, place, manner, voicing, coarticulation, articulation, release, (bool)isSyllabic);
 
                 consonants.insert(std::pair<unsigned int, Consonant>(id, consonant));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
             }
         } else if (id % 0x10 == VOWEL) {
             // Get fields from id
-            unsigned int isVoiced = true;
-            Height height = (Height)(id % 0x100 / 0x10);                    // _T
-            Part part = (Part)(id % 0x1000 / 0x100);                        // _HT
-            unsigned int isRounded = (id % 0x10000 / 0x1000);               // _PHT
-            unsigned int isTense = (id % 0x100000 / 0x10000);               // _RPHT
-            Diacritic diacritic = (Diacritic)(id % 0x10000000 / 0x100000);  // __TRPHT
+            Height height = (Height)(id % 0x100 / 0x10);
+            Part part = (Part)(id % 0x1000 / 0x100);
+            Voicing voicing = (Voicing)(id % 0x10000 / 0x1000);
+            Rounding rounding = (Rounding)(id % 0x100000 / 0x10000);
+            Coarticulation coarticulation = (Coarticulation)(id % 0x1000000 / 0x100000);
+            Tone tone = (Tone)(id % 0x10000000 / 0x1000000);
+            Length length = (Length)(id % 0x100000000 / 0x10000000);
 
             // Insert only if id is valid
-            if (isVoiced < 0 || isVoiced > 1
+            if (voicing < VOICELESS || voicing > VOICED
                 || height > OPEN
-                || part > BACK
-                || isRounded < 0 || isRounded > 1
-                || isTense < 0 || isTense > 1
-                || diacritic < 0 || diacritic > NO_AUD_REL) {
+                || part > BACK) {
 
                 std::cerr << "Could not add the vowel [" << tokens[0] << "] with id " << std::hex << id << "\n";
             } else {
                 // Insert vowel
-                Vowel vowel(tokens[0], isVoiced, height, part, diacritic, isRounded, isTense);
+                Vowel vowel(tokens[0], freq, height, part, voicing, rounding, coarticulation, tone, length);
 
                 vowels.insert(std::pair<unsigned int, Vowel>(id, vowel));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
             }
-        } else {
-            std::cerr << std::hex << id % 0x10 << " is not a valid type.\n";
         }
     }
+    phonemes.close();
+
+    if (totConFreq < 1) {
+        std::cerr << "WARNING: The sum of all consonant relative frequencies is less than 1, at "
+                  << totConFreq << "\n";
+    }
+
+    if (totVowFreq < 1) {
+        std::cerr << "WARNING: The sum of all vowel relative frequencies is less than 1, at "
+                  << totVowFreq << "\n";
+    }
+
     return false;
 }

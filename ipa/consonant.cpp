@@ -1,7 +1,7 @@
 #include "consonant.h"
 #include <map>
 
-std::string Consonant::getStrPlace (Place place) const{
+std::string Consonant::getStrPlace (Place place) const {
     static std::map<Place, std::string> places {
         {BILABIAL, "Bilabial"},
         {LABIODENTAL, "Labiodental"},
@@ -31,7 +31,7 @@ std::string Consonant::getStrPlace (Place place) const{
     }
 }
 
-std::string Consonant::getStrManner(Manner manner) const{
+std::string Consonant::getStrManner(Manner manner) const {
     static std::map<Manner, std::string> manners {
         {PLOSIVE, "Plosive"},
         {IMPLOSIVE, "Implosive"},
@@ -58,5 +58,46 @@ std::string Consonant::getStrManner(Manner manner) const{
         return it->second;
     } else {
         return "NA";
+    }
+}
+
+std::string Consonant::getStrArt(Articulation art) const {
+    static std::map<Articulation, std::string> arts {
+        {LINGUOLABIAL, "Linguolabial"},
+        {APICAL, "Apical"},
+        {LAMINAL, "Laminal"},
+        {ADVANCED, "Advanced"},
+        {RETRACTED, "Retracted"},
+        {CENTRALIZED, "Centralized"},
+        {MID_CENTRALIZED, "Mid-centralized"},
+        {RAISED, "Raised"},
+        {LOWERED, "Lowered"}
+    };
+
+    std::map<Articulation, std::string>::iterator it;
+
+    it = arts.find(art);
+    if (it != arts.end()) {
+        return it->second;
+    } else {
+        return "";
+    }
+}
+
+std::string Consonant::getStrRel(Release rel) const {
+    static std::map<Release, std::string> rels {
+        {ASPIRATED, "Aspirated"},
+        {NASAL_REL, "Nasal-release"},
+        {LAT_REL, "Lateral-release"},
+        {NO_AUD_REL, "No-audible-release"}
+    };
+
+    std::map<Release, std::string>::iterator it;
+
+    it = rels.find(rel);
+    if (it != rels.end()) {
+        return it->second;
+    } else {
+        return "";
     }
 }

@@ -65,67 +65,67 @@ enum Part {
     BACK
 };
 
-enum Diacritic {
+enum Voicing {
     VOICELESS = 1,
-    VOICED,
-    ASPIRATED,
-    MORE_ROUNDED,
-    LESS_ROUNDED,
+    BREATHY_VOICED,
+    CREAKY_VOICED,
+    VOICED
+};
+
+enum Articulation {
+    LINGUOLABIAL = 1,
+    APICAL,
+    LAMINAL,
     ADVANCED,
     RETRACTED,
     CENTRALIZED,
     MID_CENTRALIZED,
-    SYLLABIC,
-    NON_SYLLABIC,
-    RHOTICITY,
-    BREATHY_VOICED,
-    CREAKY_VOICED,
-    LINGUOLABIAL,
-    LABIALIZED,
+    RAISED,
+    LOWERED
+};
+
+// Secondary Articulation
+enum Coarticulation {
+    LABIALIZED = 1,
     PALATALIZED,
     VELARIZED,
     PHARYNGEALIZED,
     VEL_PHA, //Velarized or Pharyngealized
-    RAISED,
-    LOWERED,
-    ADV_TONGUE_ROOT,
-    RET_TONGUE_ROOT,
-    D_DENTAL,
-    APICAL,
-    LAMINAL,
-    NASALIZED,
-    D_EJECTIVE,
+    RHOTICIZED,
+    NASALIZED
+};
+
+// Consonant release
+enum Release {
+    ASPIRATED = 1,
     NASAL_REL,
     LAT_REL,
     NO_AUD_REL
 };
 
-enum Suprasegmental {
-    LONG = 1,
-    HALF_LONG,
-    EXTRA_SHORT,
-    PRIMARY_STRESS,
-    SECONDARY_STRESS,
-    MINOR_GROUP,
-    MAJOR_GROUP,
-    SYLLABLE_BREAK,
+// Vowel lip rounding
+enum Rounding {
+    UNROUNDED,
+    LESS_ROUNDED,
+    ROUNDED,
+    MORE_ROUNDED
 };
 
-enum Tone_Accent {
-    EXTRA_HIGH = 1,
-    HIGH,
-    T_MID,
+enum Length {
+    EXTRA_SHORT = 1,
+    HALF_LONG,
+    LONG,
+    EXTRA_LONG
+};
+
+enum Tone {
+    EXTRA_LOW = 1,
     LOW,
-    EXTRA_LOW,
+    T_MID,
+    HIGH,
+    EXTRA_HIGH,
     DOWNSTEP,
-    UPSTEP,
-    RISING,
-    FALLING,
-    HIGH_RISING,
-    LOW_RISING,
-    RISING_FALLING,
-    GLOBAL_RISE,
-    GLOBAL_FALL
+    UPSTEP
 };
 
 #endif
