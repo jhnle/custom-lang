@@ -5,31 +5,29 @@
 
 class Vowel : public Phoneme {
 private:
-    std::string getStrHeight (Height) const;
-    std::string getStrPart (Part) const;
-    std::string getStrRounding (Rounding) const;
-    std::string getStrLength (Length) const;
-    std::string getStrTone (Tone) const;
+    std::string getStrHeight(Height) const;
+    std::string getStrBackness(Backness) const;
+    std::string getStrRounding(Rounding) const;
+    std::string getStrTngRoot(TongueRoot) const;
 public:
-    Vowel(std::string symbol, float freq, Height height, Part part, Voicing voicing, Rounding rounding, Coarticulation coarticulation,
-          Tone tone, Length length) {
+    Vowel(std::string symbol, float freq, Height height, Backness backness, Voicing voicing,
+          Rounding rounding, Coarticulation coarticulation, TongueRoot root) {
 
-        type = VOWEL;
+        type = Type::vowel;
         this->symbol = symbol;
         this->freq = freq;
 
-        // |Length|Tone|Coarticulation|Rounding|Voicing|Part|Height|Type
-        id = (length * 0x10000000) + (tone * 0x1000000) + (coarticulation * 0x100000) + (rounding * 0x10000)
-            + (voicing * 0x1000) + (part * 0x100) + (height * 0x10) + (VOWEL);
+        // |Tongue Root|Coarticulation|Rounding|Voicing|Part|Height|Type
+        id = (static_cast<int>(root) * 0x1000000) + (static_cast<int>(coarticulation) * 0x100000)
+            + (static_cast<int>(rounding) * 0x10000) + (static_cast<int>(voicing) * 0x1000) + (static_cast<int>(backness) * 0x100)
+            + (static_cast<int>(height) * 0x10) + static_cast<int>(Type::vowel);
 
         std::string voic = getStrVoicing(voicing);
         std::string coart = getStrCoart(coarticulation);
-        std::string ton = getStrTone(tone);
-        std::string len = getStrLength(length);
+        std::string tng = getStrTngRoot(root);
 
-        desc += (len != "" ? len + " " : "" ) + (ton != "" ? ton + " " : "" ) + (coart != "" ? coart + " " : "" )
-             + (voic != "Voiced" ? voic + " " : "" ) + getStrHeight(height) + " " + getStrPart(part) + " "
-             + getStrRounding(rounding) + " Vowel";
+        desc += (tng != "" ? tng + " " : "" ) + (coart != "" ? coart + " " : "" ) + (voic != "Voiced" ? voic + " " : "" )
+             + getStrHeight(height) + " " + getStrBackness(backness) + " " + getStrRounding(rounding) + " Vowel";
     }
 
     Vowel() {}

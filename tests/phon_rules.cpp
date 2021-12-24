@@ -135,10 +135,10 @@ static std::vector<unsigned int> ruleVoicing(std::map<std::string, unsigned int>
          */
         if (i - 1 > 0 && consonants[curId].getSymbol() == "s"
             && word[i - 1] % 0x10 == 0x1
-            && word[i - 1] % 0x10000 / 0x1000 == 0x4) {
+            && word[i - 1] % 0x10000 / 0x1000 == 0x1) {
 
             // Add voicing
-            curId += 0x3000;
+            curId += 0x1000;
         }
         output.push_back(curId);
     }
@@ -163,11 +163,12 @@ static std::vector<unsigned int> rulePlosive(std::map<unsigned int, Consonant>& 
          */
         if (i + 1 < len
             && curID % 0x10 == 0x1
-            && curID % 0x1000 / 0x100 == NASAL
+            && curID % 0x1000 / 0x100 == static_cast<int>(Manner::nasal)
             && word[i + 1] % 0x10 == 0x2) {
 
             // Turn plosive
-            unsigned int tempID = curID + ((PLOSIVE - NASAL) * 0x100);
+            unsigned int tempID = curID + ((static_cast<int>(Manner::plosive)
+                                        - static_cast<int>(Manner::nasal)) * 0x100);
 
             // Change id only if corresponding plosive exists
             if (consonants.find(curID) != consonants.end()) {

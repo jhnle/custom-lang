@@ -3,13 +3,13 @@
 
 std::string Vowel::getStrHeight(Height height) const{
     static std::map<Height, std::string> heights {
-        {CLOSE, "Close"},
-        {NEAR_CLOSE, "Near-Close"},
-        {CLOSE_MID, "Close-Mid"},
-        {MID, "Mid"},
-        {OPEN_MID, "Open-Mid"},
-        {NEAR_OPEN, "Near-Open"},
-        {OPEN, "Open"}
+        {Height::close, "Close"},
+        {Height::nearClose, "Near-Close"},
+        {Height::closeMid, "Close-Mid"},
+        {Height::mid, "Mid"},
+        {Height::openMid, "Open-Mid"},
+        {Height::nearOpen, "Near-Open"},
+        {Height::open, "Open"}
     };
 
     std::map<Height, std::string>::iterator it;
@@ -22,50 +22,29 @@ std::string Vowel::getStrHeight(Height height) const{
     }
 }
 
-std::string Vowel::getStrPart(Part part) const{
-    static std::map<Part, std::string> parts {
-        {FRONT, "Front"},
-        {CENTRAL, "Central"},
-        {BACK, "Back"}
+std::string Vowel::getStrBackness(Backness back) const{
+    static std::map<Backness, std::string> backs {
+        {Backness::front, "Front"},
+        {Backness::central, "Central"},
+        {Backness::back, "Back"}
     };
 
-    std::map<Part, std::string>::iterator it;
+    std::map<Backness, std::string>::iterator it;
 
-    it = parts.find(part);
-    if (it != parts.end()) {
+    it = backs.find(back);
+    if (it != backs.end()) {
         return it->second;
     } else {
         return "NA";
     }
 }
 
-std::string Vowel::getStrTone(Tone tone) const {
-    static std::map<Tone, std::string> tones {
-        {EXTRA_LOW, "Extra-low"},
-        {LOW, "Low"},
-        {T_MID, "Mid"},
-        {HIGH, "High"},
-        {EXTRA_HIGH, "Extra high"},
-        {DOWNSTEP, "Downstep"},
-        {UPSTEP, "Upstep"}
-    };
-
-    std::map<Tone, std::string>::iterator it;
-
-    it = tones.find(tone);
-    if (it != tones.end()) {
-        return it->second;
-    } else {
-        return "";
-    }
-}
-
 std::string Vowel::getStrRounding(Rounding roun) const{
     static std::map<Rounding, std::string> rouns {
-        {UNROUNDED, "Unrounded"},
-        {LESS_ROUNDED, "Less-rounded"},
-        {ROUNDED, "Rounded"},
-        {MORE_ROUNDED, "More-rounded"}
+        {Rounding::unrounded, "Unrounded"},
+        {Rounding::lessRounded, "Less-rounded"},
+        {Rounding::rounded, "Rounded"},
+        {Rounding::moreRounded, "More-rounded"}
     };
 
     std::map<Rounding, std::string>::iterator it;
@@ -78,18 +57,16 @@ std::string Vowel::getStrRounding(Rounding roun) const{
     }
 }
 
-std::string Vowel::getStrLength(Length len) const{
-    static std::map<Length, std::string> lens {
-        {EXTRA_SHORT, "Extra-short"},
-        {HALF_LONG, "Half-long"},
-        {LONG, "long"},
-        {EXTRA_LONG, "Extra-long"}
+std::string Vowel::getStrTngRoot(TongueRoot ton) const{
+    static std::map<TongueRoot, std::string> tons {
+        {TongueRoot::retracted, "Retracted"},
+        {TongueRoot::advanced, "Advanced"}
     };
 
-    std::map<Length, std::string>::iterator it;
+    std::map<TongueRoot, std::string>::iterator it;
 
-    it = lens.find(len);
-    if (it != lens.end()) {
+    it = tons.find(ton);
+    if (it != tons.end()) {
         return it->second;
     } else {
         return "";

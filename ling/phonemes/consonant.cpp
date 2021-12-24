@@ -3,22 +3,22 @@
 
 std::string Consonant::getStrPlace (Place place) const {
     static std::map<Place, std::string> places {
-        {BILABIAL, "Bilabial"},
-        {LABIODENTAL, "Labiodental"},
-        {DENTAL, "Dental"},
-        {ALVEOLAR, "Alveolar"},
-        {POST_ALVEOLAR, "Post-Alveolar"},
-        {RETROFLEX, "Retroflex"},
-        {LABIALIZED_PALATAL, "Labialized Palatal"},
-        {POSTALVEOLAR_VELAR, "Postalveolar-Velar"},
-        {ALVEOLO_PALATAL, "Alveolo-Palatal"},
-        {PALATAL, "Palatal"},
-        {LABIAL_VELAR, "Labial-Velar"},
-        {VELAR, "Velar"},
-        {UVULAR, "Uvular"},
-        {PHARYNGEAL, "Pharyngeal"},
-        {EPIGLOTTAL, "Epiglottal"},
-        {GLOTTAL, "Glottal"}
+        {Place::bilabial, "Bilabial"},
+        {Place::labiodental, "Labiodental"},
+        {Place::dental, "Dental"},
+        {Place::alveolar, "Alveolar"},
+        {Place::postAlveolar, "Post-Alveolar"},
+        {Place::retroflex, "Retroflex"},
+        {Place::labPalatal, "Labialized Palatal"},
+        {Place::postalvVel, "Postalveolar-Velar"},
+        {Place::alvPalatal, "Alveolo-Palatal"},
+        {Place::palatal, "Palatal"},
+        {Place::labialVelar, "Labial-Velar"},
+        {Place::velar, "Velar"},
+        {Place::uvular, "Uvular"},
+        {Place::pharyngeal, "Pharyngeal"},
+        {Place::epiglottal, "Epiglottal"},
+        {Place::glottal, "Glottal"}
     };
 
     std::map<Place, std::string>::iterator it;
@@ -33,22 +33,22 @@ std::string Consonant::getStrPlace (Place place) const {
 
 std::string Consonant::getStrManner(Manner manner) const {
     static std::map<Manner, std::string> manners {
-        {PLOSIVE, "Plosive"},
-        {IMPLOSIVE, "Implosive"},
-        {EJECTIVE, "Ejective"},
-        {NASAL, "Nasal"},
-        {TRILL, "Trill"},
-        {FLAP, "Flap"},
-        {LAT_FLAP, "Lateral Flap"},
-        {FRICATIVE, "Fricative"},
-        {LAT_FRICATIVE, "Lateral Fricative"},
-        {EJEC_FRICATIVE, "Ejective Fricative"},
-        {EJEC_LAT_FRICATIVE, "Ejective Lateral Fricative"},
-        {AFFRICATE, "Affricate"},
-        {APPROXIMANT, "Approximant"},
-        {LAT_APPROXIMANT, "Lateral Approximant"},
-        {CLICK, "Click"},
-        {LAT_CLICK, "Lateral Click"}
+        {Manner::plosive, "Plosive"},
+        {Manner::implosive, "Implosive"},
+        {Manner::ejective, "Ejective"},
+        {Manner::nasal, "Nasal"},
+        {Manner::trill, "Trill"},
+        {Manner::flap, "Flap"},
+        {Manner::latFlap, "Lateral Flap"},
+        {Manner::fricative, "Fricative"},
+        {Manner::latFricative, "Lateral Fricative"},
+        {Manner::ejecFricative, "Ejective Fricative"},
+        {Manner::ejecLatFricative, "Ejective Lateral Fricative"},
+        {Manner::affricate, "Affricate"},
+        {Manner::approximant, "Approximant"},
+        {Manner::latApproximant, "Lateral Approximant"},
+        {Manner::click, "Click"},
+        {Manner::latClick, "Lateral Click"}
     };
 
     std::map<Manner, std::string>::iterator it;
@@ -63,15 +63,15 @@ std::string Consonant::getStrManner(Manner manner) const {
 
 std::string Consonant::getStrArt(Articulation art) const {
     static std::map<Articulation, std::string> arts {
-        {LINGUOLABIAL, "Linguolabial"},
-        {APICAL, "Apical"},
-        {LAMINAL, "Laminal"},
-        {ADVANCED, "Advanced"},
-        {RETRACTED, "Retracted"},
-        {CENTRALIZED, "Centralized"},
-        {MID_CENTRALIZED, "Mid-centralized"},
-        {RAISED, "Raised"},
-        {LOWERED, "Lowered"}
+        {Articulation::linguolabial, "Linguolabial"},
+        {Articulation::apical, "Apical"},
+        {Articulation::laminal, "Laminal"},
+        {Articulation::advanced, "Advanced"},
+        {Articulation::retracted, "Retracted"},
+        {Articulation::centralized, "Centralized"},
+        {Articulation::midCentralized, "Mid-centralized"},
+        {Articulation::raised, "Raised"},
+        {Articulation::lowered, "Lowered"}
     };
 
     std::map<Articulation, std::string>::iterator it;
@@ -86,10 +86,10 @@ std::string Consonant::getStrArt(Articulation art) const {
 
 std::string Consonant::getStrRel(Release rel) const {
     static std::map<Release, std::string> rels {
-        {ASPIRATED, "Aspirated"},
-        {NASAL_REL, "Nasal-release"},
-        {LAT_REL, "Lateral-release"},
-        {NO_AUD_REL, "No-audible-release"}
+        {Release::aspirated, "Aspirated"},
+        {Release::nasalRel, "Nasal-release"},
+        {Release::latRel, "Lateral-release"},
+        {Release::noAudRel, "No-audible-release"}
     };
 
     std::map<Release, std::string>::iterator it;

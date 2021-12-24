@@ -110,7 +110,7 @@ bool SoundSystem::load() {
         int type = id % 0x10;
 
         // Add frequency %, do not add phoneme if % exceeds 1
-        if (type == CONSONANT) {
+        if (type == static_cast<int>(Type::consonant)) {
 
             // Check if adding causes total % to exceed 1
             if (totConFreq + freq <= 1) {
@@ -118,7 +118,7 @@ bool SoundSystem::load() {
             } else {
                 std::cerr << "Cannot add any more consonants, total consonant relative frequency > 1\n";
             }
-        } else if (type == VOWEL) {
+        } else if (type == static_cast<int>(Type::vowel)) {
 
             // Check if adding causes total % to exceed 1
             if (totVowFreq + freq <= 1) {
@@ -134,7 +134,7 @@ bool SoundSystem::load() {
         }
 
         // Insert based on type
-        if (id % 0x10 == CONSONANT) {
+        if (id % 0x10 == static_cast<int>(Type::consonant)) {
             // Get fields from id
             Place place = (Place)(id % 0x100 / 0x10);
             Manner manner = (Manner)(id % 0x1000 / 0x100);
@@ -144,10 +144,13 @@ bool SoundSystem::load() {
             Release release = (Release)(id % 0x10000000 / 0x1000000);
             unsigned int isSyllabic = (id % 0x100000000 / 0x10000000);
 
-            // Check if id is valid
-            if (voicing < 0         || voicing > VOICED
-                || place < BILABIAL || place > GLOTTAL
-                || manner < PLOSIVE || manner > LAT_CLICK
+            // Insert only if id is valid
+            if (voicing < Voicing::voiceless || voicing > Voicing::voiced
+                || place < Place::bilabial || place > Place::glottal
+                || manner < Manner::plosive || manner > Manner::latClick
+                || articulation > Articulation::lowered
+                || coarticulation > Coarticulation::nasalized
+                || release > Release::noAudRel
                 || isSyllabic < 0   || isSyllabic > 1) {
 
                 std::cerr << "Could not add the consonant [" << tokens[0] << "] with id " << std::hex << id << "\n";
@@ -158,25 +161,27 @@ bool SoundSystem::load() {
                 consonants.insert(std::pair<unsigned int, Consonant>(id, consonant));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
             }
-        } else if (id % 0x10 == VOWEL) {
+        } else if (id % 0x10 == static_cast<int>(Type::vowel)) {
             // Get fields from id
             Height height = (Height)(id % 0x100 / 0x10);
-            Part part = (Part)(id % 0x1000 / 0x100);
+            Backness back = (Backness)(id % 0x1000 / 0x100);
             Voicing voicing = (Voicing)(id % 0x10000 / 0x1000);
             Rounding rounding = (Rounding)(id % 0x100000 / 0x10000);
             Coarticulation coarticulation = (Coarticulation)(id % 0x1000000 / 0x100000);
-            Tone tone = (Tone)(id % 0x10000000 / 0x1000000);
-            Length length = (Length)(id % 0x100000000 / 0x10000000);
+            TongueRoot root = (TongueRoot)(id % 0x10000000 / 0x1000000);
 
             // Insert only if id is valid
-            if (voicing < VOICELESS || voicing > VOICED
-                || height > OPEN
-                || part > BACK) {
+            if (voicing < Voicing::voiceless || voicing > Voicing::voiced
+                || height < Height::close || height > Height::open
+                || back < Backness::front || back > Backness::back
+                || rounding < Rounding::unrounded || rounding > Rounding::moreRounded
+                || coarticulation > Coarticulation::nasalized
+                || root > TongueRoot::advanced) {
 
                 std::cerr << "Could not add the vowel [" << tokens[0] << "] with id " << std::hex << id << "\n";
             } else {
                 // Insert vowel
-                Vowel vowel(tokens[0], freq, height, part, voicing, rounding, coarticulation, tone, length);
+                Vowel vowel(tokens[0], freq, height, back, voicing, rounding, coarticulation, root);
 
                 vowels.insert(std::pair<unsigned int, Vowel>(id, vowel));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));

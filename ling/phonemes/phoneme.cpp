@@ -4,10 +4,8 @@
 
 std::string Phoneme::getStrVoicing(Voicing voic) const{
     static std::map<Voicing , std::string> voics {
-        {VOICELESS, "Voiceless"},
-        {BREATHY_VOICED, "Breathy-voiced"},
-        {CREAKY_VOICED, "Creaky-voiced"},
-        {VOICED, "Voiced"}
+        {Voicing::voiceless, "Voiceless"},
+        {Voicing::voiced, "Voiced"}
     };
 
     std::map<Voicing, std::string>::iterator it;
@@ -22,13 +20,13 @@ std::string Phoneme::getStrVoicing(Voicing voic) const{
 
 std::string Phoneme::getStrCoart(Coarticulation coart) const {
     static std::map<Coarticulation, std::string> coarts {
-        {LABIALIZED, "Labialized"},
-        {PALATALIZED, "Palatalized"},
-        {VELARIZED, "Velarized"},
-        {PHARYNGEALIZED, "Pharyngealized"},
-        {VEL_PHA, "Velar. or Phary."},
-        {RHOTICIZED, "Rhoticized"},
-        {NASALIZED, "Nasalized"}
+        {Coarticulation::labialized, "Labialized"},
+        {Coarticulation::palatalized, "Palatalized"},
+        {Coarticulation::velarized, "Velarized"},
+        {Coarticulation::pharyngealized, "Pharyngealized"},
+        {Coarticulation::velPha, "Velar. or Phary."},
+        {Coarticulation::rhoticized, "Rhoticized"},
+        {Coarticulation::nasalized, "Nasalized"}
     };
 
     std::map<Coarticulation, std::string>::iterator it;

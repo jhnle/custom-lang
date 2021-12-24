@@ -1,131 +1,139 @@
 #ifndef IPA_H
 #define IPA_H
 
-/* Start at 1 to prevent id = 0 */
-enum Type {
-    CONSONANT = 1,
-    VOWEL
+enum class Type {
+    suprasegmental,
+    consonant,
+    vowel
 };
 
+enum class Voicing {
+    voiceless,
+    voiced
+};
+
+// CONSONANTS
+
 /* Where obstruction occurs during consonant production */
-enum Place {
-    BILABIAL,
-    LABIODENTAL,
-    DENTAL,
-    ALVEOLAR,
-    POST_ALVEOLAR,
-    RETROFLEX,
-    LABIALIZED_PALATAL,
-    POSTALVEOLAR_VELAR,
-    ALVEOLO_PALATAL,
-    PALATAL,
-    LABIAL_VELAR,
-    VELAR,
-    UVULAR,
-    PHARYNGEAL,
-    EPIGLOTTAL,
-    GLOTTAL
+enum class Place {
+    bilabial,
+    labiodental,
+    dental,
+    alveolar,
+    postAlveolar,
+    retroflex,
+    labPalatal,     // Labialized Palatal
+    postalvVel,     // Postalveolar Velar
+    alvPalatal,     // Alveolo Palatal
+    palatal,
+    labialVelar,
+    velar,
+    uvular,
+    pharyngeal,
+    epiglottal,
+    glottal
 };
 
 /* How articulators are used during consonant production */
-enum Manner {
-    PLOSIVE,
-    IMPLOSIVE,
-    EJECTIVE,
-    NASAL,
-    TRILL,
-    FLAP,
-    LAT_FLAP,
-    FRICATIVE,
-    LAT_FRICATIVE,
-    EJEC_FRICATIVE,
-    EJEC_LAT_FRICATIVE,
-    AFFRICATE,
-    APPROXIMANT,
-    LAT_APPROXIMANT,
-    CLICK,
-    LAT_CLICK
+enum class Manner {
+    plosive,
+    implosive,
+    ejective,
+    nasal,
+    trill,
+    flap,
+    latFlap,
+    fricative,
+    latFricative,
+    ejecFricative,
+    ejecLatFricative,
+    affricate,
+    approximant,
+    latApproximant,
+    click,
+    latClick
 };
 
-/* Tongue height during vowel production */
-enum Height {
-    CLOSE,
-    NEAR_CLOSE,
-    CLOSE_MID,
-    MID,
-    OPEN_MID,
-    NEAR_OPEN,
-    OPEN
-};
-
-/* Tongue position during vowel production */
-enum Part {
-    FRONT,
-    CENTRAL,
-    BACK
-};
-
-enum Voicing {
-    VOICELESS = 1,
-    BREATHY_VOICED,
-    CREAKY_VOICED,
-    VOICED
-};
-
-enum Articulation {
-    LINGUOLABIAL = 1,
-    APICAL,
-    LAMINAL,
-    ADVANCED,
-    RETRACTED,
-    CENTRALIZED,
-    MID_CENTRALIZED,
-    RAISED,
-    LOWERED
+enum class Articulation {
+    linguolabial = 1,
+    apical,
+    laminal,
+    advanced,
+    retracted,
+    centralized,
+    midCentralized,
+    raised,
+    lowered
 };
 
 // Secondary Articulation
-enum Coarticulation {
-    LABIALIZED = 1,
-    PALATALIZED,
-    VELARIZED,
-    PHARYNGEALIZED,
-    VEL_PHA, //Velarized or Pharyngealized
-    RHOTICIZED,
-    NASALIZED
+enum class Coarticulation {
+    labialized = 1,
+    palatalized,
+    velarized,
+    pharyngealized,
+    velPha,            //Velarized or Pharyngealized
+    rhoticized,
+    nasalized
 };
 
-// Consonant release
-enum Release {
-    ASPIRATED = 1,
-    NASAL_REL,
-    LAT_REL,
-    NO_AUD_REL
+enum class Release {
+    aspirated = 1,
+    nasalRel,
+    latRel,
+    noAudRel
+};
+
+// VOWELS
+
+/* Tongue height during vowel production */
+enum class Height {
+    close,
+    nearClose,
+    closeMid,
+    mid,
+    openMid,
+    nearOpen,
+    open
+};
+
+/* Tongue position during vowel production */
+enum class Backness {
+    front,
+    central,
+    back
 };
 
 // Vowel lip rounding
-enum Rounding {
-    UNROUNDED,
-    LESS_ROUNDED,
-    ROUNDED,
-    MORE_ROUNDED
+enum class Rounding {
+    unrounded,
+    lessRounded,
+    rounded,
+    moreRounded
 };
 
-enum Length {
-    EXTRA_SHORT = 1,
-    HALF_LONG,
-    LONG,
-    EXTRA_LONG
+enum class TongueRoot {
+    retracted = 1,
+    advanced
+};
+
+// SUPRASEGMENTALS
+
+enum class Length {
+    extra_short,
+    half_long,
+    llong,
+    extra_long
 };
 
 enum Tone {
-    EXTRA_LOW = 1,
-    LOW,
-    T_MID,
-    HIGH,
-    EXTRA_HIGH,
-    DOWNSTEP,
-    UPSTEP
+    extraLow,
+    low,
+    mid,
+    high,
+    extraHigh,
+    Downstep,
+    Upstep
 };
 
 #endif
