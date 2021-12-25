@@ -15,11 +15,7 @@ std::string Vowel::getStrHeight(Height height) const{
     std::map<Height, std::string>::iterator it;
 
     it = heights.find(height);
-    if (it != heights.end()) {
-        return it->second;
-    } else {
-        return "NA";
-    }
+    return it != heights.end() ? it->second : "NA";
 }
 
 std::string Vowel::getStrBackness(Backness back) const{
@@ -32,11 +28,7 @@ std::string Vowel::getStrBackness(Backness back) const{
     std::map<Backness, std::string>::iterator it;
 
     it = backs.find(back);
-    if (it != backs.end()) {
-        return it->second;
-    } else {
-        return "NA";
-    }
+    return it != backs.end() ? it->second : "NA";
 }
 
 std::string Vowel::getStrRounding(Rounding roun) const{
@@ -50,11 +42,7 @@ std::string Vowel::getStrRounding(Rounding roun) const{
     std::map<Rounding, std::string>::iterator it;
 
     it = rouns.find(roun);
-    if (it != rouns.end()) {
-        return it->second;
-    } else {
-        return "NA";
-    }
+    return it != rouns.end() ? it->second : "NA";
 }
 
 std::string Vowel::getStrTngRoot(TongueRoot ton) const{
@@ -66,9 +54,5 @@ std::string Vowel::getStrTngRoot(TongueRoot ton) const{
     std::map<TongueRoot, std::string>::iterator it;
 
     it = tons.find(ton);
-    if (it != tons.end()) {
-        return it->second;
-    } else {
-        return "";
-    }
+    return it != tons.end() ? it->second : "";
 }

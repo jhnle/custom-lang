@@ -3,7 +3,27 @@
 
 #include <string>
 
-#include "ipa.h"
+enum class Type {
+    suprasegmental,
+    consonant,
+    vowel
+};
+
+enum class Voicing {
+    voiceless,
+    voiced
+};
+
+// Secondary Articulation
+enum class Coarticulation {
+    labialized = 1,
+    palatalized,
+    velarized,
+    pharyngealized,
+    velPha,            //Velarized or Pharyngealized
+    rhoticized,
+    nasalized
+};
 
 /* Represents a discrete unit of sound */
 class Phoneme {

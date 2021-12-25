@@ -3,6 +3,65 @@
 
 #include "phoneme.h"
 
+/* Where obstruction occurs during consonant production */
+enum class Place {
+    bilabial,
+    labiodental,
+    dental,
+    alveolar,
+    postAlveolar,
+    retroflex,
+    labPalatal,     // Labialized Palatal
+    postalvVel,     // Postalveolar Velar
+    alvPalatal,     // Alveolo Palatal
+    palatal,
+    labialVelar,
+    velar,
+    uvular,
+    pharyngeal,
+    epiglottal,
+    glottal
+};
+
+/* How articulators are used during consonant production */
+enum class Manner {
+    plosive,
+    implosive,
+    ejective,
+    nasal,
+    trill,
+    flap,
+    latFlap,
+    fricative,
+    latFricative,
+    ejecFricative,
+    ejecLatFricative,
+    affricate,
+    approximant,
+    latApproximant,
+    click,
+    latClick
+};
+
+enum class Articulation {
+    linguolabial = 1,
+    apical,
+    laminal,
+    advanced,
+    retracted,
+    centralized,
+    midCentralized,
+    raised,
+    lowered
+};
+
+enum class Release {
+    aspirated = 1,
+    nasalRel,
+    latRel,
+    noAudRel
+};
+
 class Consonant : public Phoneme {
 private:
     std::string getStrPlace(Place) const;

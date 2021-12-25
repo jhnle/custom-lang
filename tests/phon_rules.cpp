@@ -1,6 +1,6 @@
-#include "../ling/phonemes/soundsystem.h"
-#include "../ling/phonemes/consonant.h"
-#include "../ling/phonemes/vowel.h"
+#include "../ling/units/soundsystem.h"
+#include "../ling/units/consonant.h"
+#include "../ling/units/vowel.h"
 
 static std::string getRepresentation(std::map<unsigned int, Consonant>&,
                                      std::map<unsigned int, Vowel>&,

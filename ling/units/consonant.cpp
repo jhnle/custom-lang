@@ -24,11 +24,7 @@ std::string Consonant::getStrPlace (Place place) const {
     std::map<Place, std::string>::iterator it;
 
     it = places.find(place);
-    if (it != places.end()) {
-        return it->second;
-    } else {
-        return "NA";
-    }
+    return it != places.end() ? it->second : "NA";
 }
 
 std::string Consonant::getStrManner(Manner manner) const {
@@ -54,11 +50,7 @@ std::string Consonant::getStrManner(Manner manner) const {
     std::map<Manner, std::string>::iterator it;
 
     it = manners.find(manner);
-    if (it != manners.end()) {
-        return it->second;
-    } else {
-        return "NA";
-    }
+    return it != manners.end() ? it->second : "NA";
 }
 
 std::string Consonant::getStrArt(Articulation art) const {
@@ -77,11 +69,7 @@ std::string Consonant::getStrArt(Articulation art) const {
     std::map<Articulation, std::string>::iterator it;
 
     it = arts.find(art);
-    if (it != arts.end()) {
-        return it->second;
-    } else {
-        return "";
-    }
+    return it != arts.end() ? it->second : "";
 }
 
 std::string Consonant::getStrRel(Release rel) const {
@@ -95,9 +83,5 @@ std::string Consonant::getStrRel(Release rel) const {
     std::map<Release, std::string>::iterator it;
 
     it = rels.find(rel);
-    if (it != rels.end()) {
-        return it->second;
-    } else {
-        return "";
-    }
+    return it != rels.end() ? it->second : "";
 }

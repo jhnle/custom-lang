@@ -3,7 +3,33 @@
 
 #include <string>
 
-#include "ipa.h"
+enum class Feature {
+    tone,
+    length,
+    stress,
+    intonation
+};
+
+enum class SupraType {
+    extraLow,   // Tone
+    low,
+    mid,
+    high,
+    extraHigh,
+    downstep,
+    upstep,
+    extraShort, // Length
+    halfLong,
+    llong,
+    extraLong,
+    priStress,  // Stress
+    secStress,
+    minor,      // Intonation
+    major,
+    globalFall,
+    globalRise
+
+};
 
 class Suprasegmental {
 private:

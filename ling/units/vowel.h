@@ -3,6 +3,37 @@
 
 #include "phoneme.h"
 
+/* Tongue height during vowel production */
+enum class Height {
+    close,
+    nearClose,
+    closeMid,
+    mid,
+    openMid,
+    nearOpen,
+    open
+};
+
+/* Tongue position during vowel production */
+enum class Backness {
+    front,
+    central,
+    back
+};
+
+// Vowel lip rounding
+enum class Rounding {
+    unrounded,
+    lessRounded,
+    rounded,
+    moreRounded
+};
+
+enum class TongueRoot {
+    retracted = 1,
+    advanced
+};
+
 class Vowel : public Phoneme {
 private:
     std::string getStrHeight(Height) const;

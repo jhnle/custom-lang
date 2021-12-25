@@ -1,8 +1,8 @@
 #include <iomanip>
 
-#include "../ling/phonemes/soundsystem.h"
-#include "../ling/phonemes/consonant.h"
-#include "../ling/phonemes/vowel.h"
+#include "../ling/units/soundsystem.h"
+#include "../ling/units/consonant.h"
+#include "../ling/units/vowel.h"
 
 int main() {
 

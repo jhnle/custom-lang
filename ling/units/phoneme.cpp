@@ -11,11 +11,7 @@ std::string Phoneme::getStrVoicing(Voicing voic) const{
     std::map<Voicing, std::string>::iterator it;
 
     it = voics.find(voic);
-    if (it != voics.end()) {
-        return it->second;
-    } else {
-        return "";
-    }
+    return it != voics.end() ? it->second : "";
 }
 
 std::string Phoneme::getStrCoart(Coarticulation coart) const {
@@ -32,9 +28,5 @@ std::string Phoneme::getStrCoart(Coarticulation coart) const {
     std::map<Coarticulation, std::string>::iterator it;
 
     it = coarts.find(coart);
-    if (it != coarts.end()) {
-        return it->second;
-    } else {
-        return "";
-    }
+    return it != coarts.end() ? it->second : "";
 }
