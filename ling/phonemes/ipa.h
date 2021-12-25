@@ -119,21 +119,32 @@ enum class TongueRoot {
 
 // SUPRASEGMENTALS
 
-enum class Length {
-    extra_short,
-    half_long,
-    llong,
-    extra_long
+enum class Feature {
+    tone,
+    length,
+    stress,
+    intonation
 };
 
-enum Tone {
-    extraLow,
+enum class SupraType {
+    extraLow,   // Tone
     low,
     mid,
     high,
     extraHigh,
-    Downstep,
-    Upstep
+    downstep,
+    upstep,
+    extraShort, // Length
+    halfLong,
+    llong,
+    extraLong,
+    priStress,  // Stress
+    secStress,
+    minor,      // Intonation
+    major,
+    globalFall,
+    globalRise
+
 };
 
 #endif

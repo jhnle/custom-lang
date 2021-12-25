@@ -45,6 +45,13 @@ bool SoundSystem::save() {
                  << std::dec << phon.second.getFreq() << "\n";
     }
 
+    // Save suprasegmentals
+    for (auto const& seg: suprasegmentals) {
+        phonemes << seg.second.getSymbol() << ","
+                 << std::hex << seg.second.getId() << ","
+                 << std::dec << seg.second.getFreq() << "\n";
+    }
+
     phonemes.close();
     return false;
 }
@@ -126,8 +133,7 @@ bool SoundSystem::load() {
             } else {
                 std::cerr << "Cannot add any more vowels, total vowel relative frequency > 1\n";
             }
-        } else {
-
+        } else if (type != static_cast<int>(Type::suprasegmental)) {
             // ID does not denote a valid type, skip to next line
             std::cerr << std::hex << id % 0x10 << " is not a valid type.\n";
             continue;
@@ -184,6 +190,38 @@ bool SoundSystem::load() {
                 Vowel vowel(tokens[0], freq, height, back, voicing, rounding, coarticulation, root);
 
                 vowels.insert(std::pair<unsigned int, Vowel>(id, vowel));
+                ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
+            }
+        } else {
+            // Get fields from id
+            SupraType supraType = (SupraType)(id % 0x1000 / 0x10);
+            Feature feature = Feature::intonation;
+
+            // Get feature from suprasegmental range
+            switch (static_cast<int>(supraType)) {
+                case 0:
+                    feature = Feature::tone;
+                case 6:
+                    break;
+                case 7:
+                    feature = Feature::length;
+                case 10:
+                    break;
+                case 11:
+                    feature = Feature::stress;
+                case 12:
+                    break;
+            }
+
+            if (supraType < SupraType::extraLow
+                || supraType > SupraType::globalRise) {
+
+                std::cerr << "Could not add the suprasegmental " << tokens[0] << " with id " << std::hex << id << "\n";
+            } else {
+                // Insert suprasegmental
+                Suprasegmental supraseg(tokens[0], freq, feature, supraType);
+
+                suprasegmentals.insert(std::pair<unsigned int, Suprasegmental>(id, supraseg));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
             }
         }
