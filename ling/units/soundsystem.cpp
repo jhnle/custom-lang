@@ -133,7 +133,7 @@ bool SoundSystem::load() {
             } else {
                 std::cerr << "Cannot add any more vowels, total vowel relative frequency > 1\n";
             }
-        } else if (type != static_cast<int>(Type::suprasegmental)) {
+        } else if (type != 0) {
             // ID does not denote a valid type, skip to next line
             std::cerr << std::hex << id % 0x10 << " is not a valid type.\n";
             continue;

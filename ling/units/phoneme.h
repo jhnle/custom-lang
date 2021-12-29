@@ -3,9 +3,9 @@
 
 #include <string>
 
+// Start at 1, since 0 is reserved for suprasegmentals
 enum class Type {
-    suprasegmental,
-    consonant,
+    consonant = 1,
     vowel
 };
 
@@ -33,6 +33,7 @@ protected:
     float freq;
     std::string symbol;
     std::string desc;
+    Voicing voicing;
 
     std::string getStrVoicing (Voicing) const;
     std::string getStrCoart (Coarticulation) const;
@@ -42,6 +43,7 @@ public:
     float getFreq() const { return freq; }
     std::string getSymbol() const { return symbol; }
     std::string getDesc() const { return desc; }
+    Voicing getVoicing() const { return voicing; }
 };
 
 #endif

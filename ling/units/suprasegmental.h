@@ -2,6 +2,7 @@
 #define SUPRASEG_H
 
 #include <string>
+#include <map>
 
 enum class Feature {
     tone,
@@ -79,14 +80,15 @@ public:
         this->supraType = supraType;
 
         // Format TTS, where S = 0 and the next two digits are for type (extra low, etc)
-        id = (static_cast<int>(supraType) * 0x10) + static_cast<int>(Type::suprasegmental);
+        id = (static_cast<int>(supraType) * 0x10);
 
         desc = getStrSupraType(supraType);
     }
 
+    Suprasegmental() {}
+
     float getFreq() const { return prob; }
     unsigned int getId() const { return id; }
-    Type getType() const { return Type::suprasegmental; }
     Feature getFeature() const { return feature; }
     SupraType getSupraType() const { return supraType; }
     std::string getSymbol() const { return symbol; }
