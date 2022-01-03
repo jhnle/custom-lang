@@ -1,16 +1,16 @@
 #include "../ling/units/soundsystem.h"
 #include "../ling/units/consonant.h"
 #include "../ling/units/vowel.h"
-#include "../ling/word/word.h"
+#include "../ling/word/morpheme.h"
 
-static Word ruleVoicing(std::map<unsigned int, Consonant>&,
-                        Word&);
+static Morpheme ruleVoicing(std::map<unsigned int, Consonant>&,
+                        Morpheme&);
 
 static std::vector<Consonant> applyVRule(std::vector<Consonant>&,
                                          std::map<unsigned int, Consonant>&);
 
-static Word rulePlosive(std::map<unsigned int, Consonant>&,
-                        Word&);
+static Morpheme rulePlosive(std::map<unsigned int, Consonant>&,
+                        Morpheme&);
 
 int main() {
     SoundSystem soundSystem("preset00");
@@ -24,7 +24,7 @@ int main() {
      * since ids may change in the future
      */
 
-    Word word1 {
+    Morpheme morpheme1 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["s"]],
@@ -40,7 +40,7 @@ int main() {
         )
     }; // skæds
 
-    Word word2 {
+    Morpheme morpheme2 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["t"]],
@@ -65,7 +65,7 @@ int main() {
         )
     }; // tætsəs
 
-    Word word3 {
+    Morpheme morpheme3 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["s"]],
@@ -89,7 +89,7 @@ int main() {
         )
     }; // soʊgzdi
 
-    Word word4 {
+    Morpheme morpheme4 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["ŋ"]],
@@ -114,7 +114,7 @@ int main() {
         )
     }; // ŋɑmnəl
 
-    Word word5 {
+    Morpheme morpheme5 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["θ"]],
@@ -138,26 +138,26 @@ int main() {
     }; // θoʊbnɑ
 
     // Apply voicing rule
-    Word rep1 = ruleVoicing(consonants, word1); // skædz
-    Word rep2 = ruleVoicing(consonants, word2); // tætsəs
-    Word rep3 = ruleVoicing(consonants, word3); // soʊgzdi
+    Morpheme rep1 = ruleVoicing(consonants, morpheme1); // skædz
+    Morpheme rep2 = ruleVoicing(consonants, morpheme2); // tætsəs
+    Morpheme rep3 = ruleVoicing(consonants, morpheme3); // soʊgzdi
 
     // Apply plosive rule
-    Word rep4 = rulePlosive(consonants, word4); // gɑmdəl
-    Word rep5 = rulePlosive(consonants, word5); // θoʊbdɑ
+    Morpheme rep4 = rulePlosive(consonants, morpheme4); // gɑmdəl
+    Morpheme rep5 = rulePlosive(consonants, morpheme5); // θoʊbdɑ
 
     std::cout << "/s/ --> [z] / C_\n"
-              << "/" << word1.getPhonemic() << "/ --> ["
+              << "/" << morpheme1.getPhonemic() << "/ --> ["
               << rep1.getPhonemic()  << "]\n"
-              << "/" << word2.getPhonemic() << "/ --> ["
+              << "/" << morpheme2.getPhonemic() << "/ --> ["
               << rep2.getPhonemic()  << "]\n"
-              << "/" << word3.getPhonemic() << "/ --> ["
+              << "/" << morpheme3.getPhonemic() << "/ --> ["
               << rep3.getPhonemic()  << "]\n";
 
     std::cout << "\n/nasal/ --> [plosive] / _V\n"
-              << "/" << word4.getPhonemic() << "/ --> ["
+              << "/" << morpheme4.getPhonemic() << "/ --> ["
               << rep4.getPhonemic() << "]\n"
-              << "/" << word5.getPhonemic() << "/ --> ["
+              << "/" << morpheme5.getPhonemic() << "/ --> ["
               << rep5.getPhonemic() << "]\n";
 
     return 0;
@@ -169,10 +169,10 @@ int main() {
  * Consonants, at this point, can only occur in the onset and coda,
  * so ignore the nucleus
  */
-static Word ruleVoicing(std::map<unsigned int, Consonant>& consonants,
-                        Word& input) {
+static Morpheme ruleVoicing(std::map<unsigned int, Consonant>& consonants,
+                        Morpheme& input) {
 
-    Word output;
+    Morpheme output;
     int numSyl = input.getNumSyl();
 
     // Loop for each syllable
@@ -238,10 +238,10 @@ static std::vector<Consonant> applyVRule(std::vector<Consonant>& input, std::map
  *
  * Here, only onsets can occur before a vowel, so ignore coda and nucleus
  */
-static Word rulePlosive(std::map<unsigned int, Consonant>& consonants,
-                        Word& input) {
+static Morpheme rulePlosive(std::map<unsigned int, Consonant>& consonants,
+                        Morpheme& input) {
 
-    Word output;
+    Morpheme output;
     int numSyl = input.getNumSyl();
 
     // Loop for each syllable
