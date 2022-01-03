@@ -1,39 +1,51 @@
-/*
- * A word represents a sequence of syllables
- * and their transcription.
- *
- */
-
 #ifndef WORD_H
 #define WORD_H
 
 #include <initializer_list>
-#include "syllable.h"
+#include <morpheme.h>
+
 
 class Word {
 private:
-    std::vector<Syllable> syllables;
-    std::string phonemic;               // Phonemic transcription of word
-    int numSyl;
+  // string phonetic;
+  // string spelling;
+  // string meaning;
+  // enum for some POS
+
+  std::vector<Morpheme> morphemes;
+  std::string phonemic;  
+  int numMorphemes;
+  
 public:
-    Word(std::initializer_list<Syllable> list) {
-        numSyl = 0;
-        for (const auto& syllable : list) {
-            addSyllable(syllable);
-        }
+  Word(initializer_list<Morpheme> lst) {
+    for (const auto& morpheme : lst) {
+        addMorpheme(morpheme);
     }
 
-    Word() { numSyl = 0; }
+  }
+  
+  Word() {
+    numMorphemes = 0;
+  }
+  
+  void addMorpheme(Morpheme m) {
+    morphemes.push_back(m);
+    phonemic += m.getPhonemic();
+    numMorphemes++;
+  }
+  
+  std::vector<Morpheme> getMorphemes() const {
+    return morphemes;
+  }
+  
+  std::string getPhonemic() const {
+    return phonemic;
+  }
+  
+  int getNumMorphemes() const {
+    return numMorphemes;
+  }
 
-    void addSyllable(Syllable syl) {
-        syllables.push_back(syl);
-        phonemic += syl.getStrSyl();
-        numSyl++;
-    }
-
-    std::vector<Syllable> getSyllables() const { return syllables; }
-    std::string getPhonemic() const { return phonemic; }
-    int getNumSyl() const { return numSyl; }
-};
+}
 
 #endif
