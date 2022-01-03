@@ -24,7 +24,7 @@ public:
 
   }
   
-  Morpheme() {
+  Word() {
     numMorphemes = 0;
   }
   
