@@ -41,18 +41,19 @@ private:
     Rounding rounding;
     Coarticulation coart;
     TongueRoot root;
+    float probNucleus;      // Probabilty of phoneme occuring in nucleus
 
     std::string getStrHeight(Height) const;
     std::string getStrBackness(Backness) const;
     std::string getStrRounding(Rounding) const;
     std::string getStrTngRoot(TongueRoot) const;
 public:
-    Vowel(std::string symbol, float freq, Height height, Backness backness, Voicing voicing,
+    Vowel(std::string symbol, float probNucleus, Height height, Backness backness, Voicing voicing,
           Rounding rounding, Coarticulation coart, TongueRoot root) {
 
         type = Type::vowel;
         this->symbol = symbol;
-        this->freq = freq;
+        this->probNucleus = probNucleus;
         this->height = height;
         this->backness = backness;
         this->rounding = rounding;
@@ -79,6 +80,7 @@ public:
     Rounding getRounding() const { return rounding; }
     Coarticulation getCoart() const { return coart; }
     TongueRoot getTngRoot() const { return root; }
+    float getProbNucleus() const { return probNucleus; }
 };
 
 #endif

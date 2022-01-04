@@ -71,18 +71,24 @@ private:
     Articulation art;
     Release release;
     bool syllabic;
+    float probOnset;        // Probabilty of phoneme occuring in onset
+    float probNucleus;      // Probabilty of phoneme occuring in nucleus if syllabic
+    float probCoda;         // Probabilty of phoneme occuring in coda
 
     std::string getStrPlace(Place) const;
     std::string getStrManner(Manner) const;
     std::string getStrArt(Articulation) const;
     std::string getStrRel(Release) const;
 public:
-    Consonant(std::string symbol, float freq, Place place, Manner manner, Voicing voicing,
-              Coarticulation coart, Articulation art, Release release, bool syllabic) {
+    Consonant(std::string symbol, float probOnset, float probNucleus, float probCoda,
+              Place place, Manner manner, Voicing voicing, Coarticulation coart,
+              Articulation art, Release release, bool syllabic) {
 
         type = Type::consonant;
         this->symbol = symbol;
-        this->freq = freq;
+        this->probOnset = probOnset;
+        this->probNucleus = probNucleus;
+        this->probCoda = probCoda;
         this->place = place;
         this->manner = manner;
         this->voicing = voicing;
@@ -108,13 +114,16 @@ public:
 
     Consonant() {}
 
-    Place getPlace() { return place; }
-    Manner getManner() { return manner; }
-    Voicing getVoicing() { return voicing; }
-    Coarticulation getCoart() { return coart; }
-    Articulation getArt() { return art; }
-    Release getRelease() { return release; }
-    bool isSyllabic() { return syllabic; }
+    Place getPlace() const { return place; }
+    Manner getManner() const { return manner; }
+    Voicing getVoicing() const { return voicing; }
+    Coarticulation getCoart() const { return coart; }
+    Articulation getArt() const { return art; }
+    Release getRelease() const { return release; }
+    float getProbOnset() const { return probOnset; }
+    float getProbNucleus() const { return probNucleus; }
+    float getProbCoda() const { return probCoda; }
+    bool isSyllabic() const { return syllabic; }
 };
 
 #endif

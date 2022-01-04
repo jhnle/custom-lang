@@ -6,7 +6,7 @@
 
 int main() {
 
-    SoundSystem soundSystem("preset00");
+    SoundSystem soundSystem("preset01");
     soundSystem.load();
 
     std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();
@@ -16,23 +16,24 @@ int main() {
     std::cout << "Consonants: " << consonants.size() << "\n----\n";
     for (auto const& sym: consonants) {
         std::cout << "ID: 0x" << std::setfill('0') << std::setw(8) << std::hex << sym.first
-                  << " %: " << sym.second.getFreq() << " [" << sym.second.getSymbol()
+                  << " %: " << sym.second.getProbOnset() << ", " << sym.second.getProbNucleus()
+                  << ", " << sym.second.getProbCoda() << " [" << sym.second.getSymbol()
                   << "] " << sym.second.getDesc() << std::endl;
     }
 
     std::cout << "\nVowels: " << std::dec << vowels.size() << "\n----\n";
     for (auto const& sym: vowels) {
         std::cout << "ID: 0x" << std::setfill('0') << std::setw(8) << std::hex << sym.first
-                  << " %: " << sym.second.getFreq() << " [" << sym.second.getSymbol()
+                  << " %: " << sym.second.getProbNucleus() << " [" << sym.second.getSymbol()
                   << "] " << sym.second.getDesc() << std::endl;
     }
 
     // Having suprasegmentals is optional
-    if (suprasegmentals.size() > 0) {
+    if (!suprasegmentals.empty()) {
         std::cout << "\nSuprasegmentals: " << std::dec << suprasegmentals.size() << "\n----\n";
         for (auto const& sym: suprasegmentals) {
             std::cout << "ID: 0x" << std::setfill('0') << std::setw(3) << std::hex << sym.first
-                    << " %: " << sym.second.getFreq() << " " << sym.second.getSymbol()
+                    << " %: " << sym.second.getProbSupra() << " " << sym.second.getSymbol()
                     << " " << sym.second.getDesc() << std::endl;
         }
     }
