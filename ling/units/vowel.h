@@ -75,6 +75,10 @@ public:
 
     Vowel() {}
 
+    bool operator==(const Vowel& vowel) {
+        return this->getId() == vowel.getId() ? true : false;
+    }
+
     Height getHeight() const { return height; }
     Backness getBackness() const { return backness; }
     Rounding getRounding() const { return rounding; }

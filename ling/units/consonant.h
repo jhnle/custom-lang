@@ -114,6 +114,10 @@ public:
 
     Consonant() {}
 
+    bool operator==(const Consonant& consonant) {
+        return this->getId() == consonant.getId() ? true : false;
+    }
+
     Place getPlace() const { return place; }
     Manner getManner() const { return manner; }
     Voicing getVoicing() const { return voicing; }

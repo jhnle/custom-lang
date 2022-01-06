@@ -87,6 +87,10 @@ public:
 
     Suprasegmental() {}
 
+    bool operator==(const Suprasegmental& supra) {
+        return this->getId() == supra.getId() ? true : false;
+    }
+
     float getProbSupra() const { return probSupra; }
     unsigned int getId() const { return id; }
     Feature getFeature() const { return feature; }

@@ -6,4 +6,6 @@
 
 Syllable makeSyllable(SoundSystem);
 
+std::array<int, 4> genSyllableType(std::array<int, 4>, std::array<int, 4>);
+
 #endif
