@@ -70,12 +70,6 @@ bool SoundSystem::load() {
         return true;
     }
 
-    // Keep track of probabilities, cannot be over 1
-    float totProbOnset = 0;
-    float totProbNucleus = 0;
-    float totProbCoda = 0;
-    float totProbSupra = 0;
-
     // Read each line in file
     std::string line;
     while (getline(phonemes, line)) {
@@ -121,37 +115,6 @@ bool SoundSystem::load() {
             continue; // Skip to next line
         }
 
-        // Check if adding causes total % to exceed 1
-        if (totProbOnset + probOnset <= 1
-            && totProbNucleus + probNucleus <=1
-            && totProbCoda + probCoda <= 1
-            && totProbSupra + probSupra <= 1) {
-
-            totProbOnset += probOnset;
-            totProbNucleus += probNucleus;
-            totProbCoda += probCoda;
-            totProbSupra += probSupra;
-        } else {
-            // Print messages depending on what was exceeded
-            if (totProbOnset + probOnset > 1) {
-                std::cerr << "Could not add [" + tokens[0] + "]; Total onset % > 1\n";
-            }
-
-            if (totProbNucleus + probNucleus > 1) {
-                std::cerr << "Could not add [" + tokens[0] + "]; Total nucleus % > 1\n";
-            }
-
-            if (totProbCoda + probCoda > 1) {
-                std::cerr << "Could not add [" + tokens[0] + "]; Total coda % > 1\n";
-            }
-
-            if (totProbSupra + probSupra > 1) {
-                std::cerr << "Could not add [" + tokens[0] + "]; Total supra % > 1\n";
-            }
-
-            continue; // Do not insert phoneme since probabilities exceed 1
-        }
-
         // Insert based on type
         if (id % 0x10 == static_cast<int>(Type::consonant)) {
             // Get fields from id
@@ -178,6 +141,12 @@ bool SoundSystem::load() {
                 Consonant consonant(tokens[0], probOnset, probNucleus, probCoda,
                                     place, manner, voicing, coarticulation, articulation, release, (bool)isSyllabic);
 
+                probOnsets.push_back(probOnset);
+                probCodas.push_back(probCoda);
+
+                onsetIds.push_back(id);
+                codaIds.push_back(id);
+
                 consonants.insert(std::pair<unsigned int, Consonant>(id, consonant));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
             }
@@ -202,6 +171,9 @@ bool SoundSystem::load() {
             } else {
                 // Insert vowel
                 Vowel vowel(tokens[0], probNucleus, height, back, voicing, rounding, coarticulation, root);
+
+                probNuclei.push_back(probNucleus);
+                nucleusIds.push_back(id);
 
                 vowels.insert(std::pair<unsigned int, Vowel>(id, vowel));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
@@ -234,6 +206,9 @@ bool SoundSystem::load() {
             } else {
                 // Insert suprasegmental
                 Suprasegmental supraseg(tokens[0], probSupra, feature, supraType);
+
+                probSupras.push_back(probSupra);
+                supraIds.push_back(id);
 
                 suprasegmentals.insert(std::pair<unsigned int, Suprasegmental>(id, supraseg));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));

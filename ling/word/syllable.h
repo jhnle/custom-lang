@@ -25,6 +25,16 @@ private:
     std::vector<Consonant> coda;
     std::vector<Suprasegmental> suprasegs;
 public:
+    Syllable(std::vector<Consonant> onset, std::vector<Vowel> nucleus,
+             std::vector<Consonant> coda, std::vector<Suprasegmental> suprasegs) {
+        this->onset = onset;
+        this->nucleus = nucleus;
+        this->coda = coda;
+        this->suprasegs = suprasegs;
+    }
+
+    // The following constructors are unnecessary
+
     // CVC
     Syllable(std::vector<Consonant> onset, std::vector<Vowel> nucleus, std::vector<Consonant> coda) {
         this->onset = onset;
@@ -91,6 +101,7 @@ public:
     std::vector<Suprasegmental> getSuprasegs() const { return suprasegs; }
 
     bool hasOnset() const { return onset.size() > 0 ? true : false; }
+    bool hasNucleus() const { return nucleus.size() > 0 ? true : false; }
     bool hasSupraseg() const { return suprasegs.size() > 0 ? true : false; }
     bool hasCoda() const { return coda.size() > 0 ? true : false; }
 

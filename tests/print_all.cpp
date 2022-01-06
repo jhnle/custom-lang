@@ -1,8 +1,6 @@
 #include <iomanip>
 
 #include "../ling/units/soundsystem.h"
-#include "../ling/units/consonant.h"
-#include "../ling/units/vowel.h"
 
 int main() {
 
@@ -16,16 +14,13 @@ int main() {
     std::cout << "Consonants: " << consonants.size() << "\n----\n";
     for (auto const& sym: consonants) {
         std::cout << "ID: 0x" << std::setfill('0') << std::setw(8) << std::hex << sym.first
-                  << " %: " << sym.second.getProbOnset() << ", " << sym.second.getProbNucleus()
-                  << ", " << sym.second.getProbCoda() << " [" << sym.second.getSymbol()
-                  << "] " << sym.second.getDesc() << std::endl;
+                  << " [" << sym.second.getSymbol() << "] " << sym.second.getDesc() << "\n";
     }
 
     std::cout << "\nVowels: " << std::dec << vowels.size() << "\n----\n";
     for (auto const& sym: vowels) {
         std::cout << "ID: 0x" << std::setfill('0') << std::setw(8) << std::hex << sym.first
-                  << " %: " << sym.second.getProbNucleus() << " [" << sym.second.getSymbol()
-                  << "] " << sym.second.getDesc() << std::endl;
+                  << " [" << sym.second.getSymbol() << "] " << sym.second.getDesc() << "\n";
     }
 
     // Having suprasegmentals is optional
@@ -33,8 +28,7 @@ int main() {
         std::cout << "\nSuprasegmentals: " << std::dec << suprasegmentals.size() << "\n----\n";
         for (auto const& sym: suprasegmentals) {
             std::cout << "ID: 0x" << std::setfill('0') << std::setw(3) << std::hex << sym.first
-                    << " %: " << sym.second.getProbSupra() << " " << sym.second.getSymbol()
-                    << " " << sym.second.getDesc() << std::endl;
+                      << " " << sym.second.getSymbol() << " " << sym.second.getDesc() << "\n";
         }
     }
 
