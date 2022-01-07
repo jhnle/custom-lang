@@ -31,6 +31,8 @@ bool SoundSystem::save() {
         return true;
     }
 
+    phonemes << "symbol,id,onset weight,nucleus weight,coda weight,suprasegmental weight\n";
+
     // Save consonants
     for (auto const& phon: consonants) {
         phonemes << phon.second.getSymbol() << ","
@@ -50,7 +52,7 @@ bool SoundSystem::save() {
     // Save suprasegmentals
     for (auto const& seg: suprasegmentals) {
         phonemes << seg.second.getSymbol() << ","
-                 << std::hex << seg.second.getId() << ",0,0,0"
+                 << std::hex << seg.second.getId() << ",0,0,0,"
                  << std::dec << seg.second.getProbSupra() << "\n";
     }
 
@@ -72,6 +74,7 @@ bool SoundSystem::load() {
 
     // Read each line in file
     std::string line;
+    bool isFirst = true;
     while (getline(phonemes, line)) {
         std::vector<std::string> tokens;
         std::stringstream ss(line);
@@ -80,6 +83,12 @@ bool SoundSystem::load() {
         // Tokenize line
         while(getline(ss, token, ',')) {
             tokens.push_back(token);
+        }
+
+        // Ignore first line
+        if (isFirst) {
+            isFirst = false;
+            continue; // Skip to next line
         }
 
         // Check if line has correct amount of values

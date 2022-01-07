@@ -1,16 +1,14 @@
 #include "../ling/units/soundsystem.h"
-#include "../ling/units/consonant.h"
-#include "../ling/units/vowel.h"
 #include "../ling/word/morpheme.h"
 
 static Morpheme ruleVoicing(std::map<unsigned int, Consonant>&,
-                        Morpheme&);
+                            Morpheme&);
 
 static std::vector<Consonant> applyVRule(std::vector<Consonant>&,
                                          std::map<unsigned int, Consonant>&);
 
 static Morpheme rulePlosive(std::map<unsigned int, Consonant>&,
-                        Morpheme&);
+                            Morpheme&);
 
 int main() {
     SoundSystem soundSystem("preset00");
