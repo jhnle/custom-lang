@@ -9,7 +9,10 @@
  * soundSystem.
  *
  */
-Syllable makeSyllable(SoundSystem soundSystem) {
+Syllable makeSyllable(SoundSystem soundSystem,
+                      std::array<int, 4> max,
+                      std::array<int, 4> min) {
+
     std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();
     std::map<unsigned int, Vowel> vowels = soundSystem.getVowels();
     std::map<unsigned int, Suprasegmental> suprasegmentals = soundSystem.getSupraSegs();
@@ -34,10 +37,6 @@ Syllable makeSyllable(SoundSystem soundSystem) {
     std::discrete_distribution<> disNucleus(probNuclei.begin(), probNuclei.end());
     std::discrete_distribution<> disCoda(probCodas.begin(), probCodas.end());
     std::discrete_distribution<> disSupra(probSupras.begin(), probSupras.end());
-
-    // In the future these should be passed in from ruleSystem
-    std::array<int, 4> max = {2, 2, 1, 0};
-    std::array<int, 4> min = {0, 1, 0, 0};
 
     std::array<int, 4> sylType = genSyllableType(max, min);
 
@@ -109,7 +108,7 @@ Syllable makeSyllable(SoundSystem soundSystem) {
  * allowed in the language, where each type is equally as likely.
  *
  * The output syllable is represented by the array "result", where index
- * 1 = onset, 2 = nucleus, 3 = coda, and 4 = suprasegmental.
+ * 0 = onset, 1 = nucleus, 2 = coda, and 3 = suprasegmental.
  * The value at the index represents the amount of phonemes or
  * suprasegmentals at the corresponding part.
  *

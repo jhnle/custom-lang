@@ -20,9 +20,9 @@ private:
     std::map<unsigned int, Consonant> consonants;
     std::map<unsigned int, Vowel> vowels;
     std::map<unsigned int, Suprasegmental> suprasegmentals;
-    std::map<std::string, unsigned int> ids;
     std::vector<float> probOnsets, probNuclei, probCodas, probSupras;
     std::vector<unsigned int> onsetIds, nucleusIds, codaIds, supraIds;
+    std::map<std::string, unsigned int> ids;    // Temporary, meant for testing
     bool isValidSym(std::string) const;
 public:
     SoundSystem(std::string name) {

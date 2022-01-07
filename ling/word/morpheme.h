@@ -32,7 +32,7 @@ public:
     }
 
     std::vector<Syllable> getSyllables() const { return syllables; }
-    std::string getPhonemic() const { return phonemic; }
+    std::string getPhonemic() const { return phonemic; }        // NOTE Should eventually be moved to the Word class
     int getNumSyl() const { return numSyl; }
 };
 
