@@ -35,7 +35,7 @@ enum class SupraType {
 class Suprasegmental {
 private:
     unsigned int id;
-    float prob;
+    float probSupra;
     Feature feature;
     SupraType supraType;
     std::string symbol;
@@ -72,10 +72,10 @@ private:
         }
     }
 public:
-    Suprasegmental(std::string symbol, float prob, Feature feature, SupraType supraType) {
+    Suprasegmental(std::string symbol, float probSupra, Feature feature, SupraType supraType) {
 
         this->symbol = symbol;
-        this->prob = prob;
+        this->probSupra = probSupra;
         this->feature = feature;
         this->supraType = supraType;
 
@@ -87,7 +87,11 @@ public:
 
     Suprasegmental() {}
 
-    float getFreq() const { return prob; }
+    bool operator==(const Suprasegmental& supra) {
+        return this->getId() == supra.getId() ? true : false;
+    }
+
+    float getProbSupra() const { return probSupra; }
     unsigned int getId() const { return id; }
     Feature getFeature() const { return feature; }
     SupraType getSupraType() const { return supraType; }

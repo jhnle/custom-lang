@@ -25,63 +25,11 @@ private:
     std::vector<Consonant> coda;
     std::vector<Suprasegmental> suprasegs;
 public:
-    // CVC
-    Syllable(std::vector<Consonant> onset, std::vector<Vowel> nucleus, std::vector<Consonant> coda) {
-        this->onset = onset;
-        this->nucleus = nucleus;
-        this->coda = coda;
-    }
-
-    // VC
-    Syllable(std::vector<Vowel> nucleus, std::vector<Consonant> coda) {
-        this->nucleus = nucleus;
-        this->coda = coda;
-    }
-
-    // CV
-    Syllable(std::vector<Consonant> onset, std::vector<Vowel> nucleus) {
-        this->onset = onset;
-        this->nucleus = nucleus;
-    }
-
-    // V
-    Syllable(std::vector<Vowel> nucleus) {
-        this->nucleus = nucleus;
-    }
-
-    // With Suprasegmentals
-
-    // CVSC
     Syllable(std::vector<Consonant> onset, std::vector<Vowel> nucleus,
-             std::vector<Suprasegmental> suprasegs, std::vector<Consonant> coda) {
-
+             std::vector<Consonant> coda, std::vector<Suprasegmental> suprasegs) {
         this->onset = onset;
         this->nucleus = nucleus;
-        this->suprasegs = suprasegs;
         this->coda = coda;
-    }
-
-    // VSC
-    Syllable(std::vector<Vowel> nucleus, std::vector<Suprasegmental> suprasegs,
-             std::vector<Consonant> coda) {
-
-        this->nucleus = nucleus;
-        this->coda = coda;
-        this->suprasegs = suprasegs;
-    }
-
-    // CVS
-    Syllable(std::vector<Consonant> onset, std::vector<Vowel> nucleus,
-             std::vector<Suprasegmental> suprasegs) {
-
-        this->onset = onset;
-        this->nucleus = nucleus;
-        this->suprasegs = suprasegs;
-    }
-
-    // VS
-    Syllable(std::vector<Vowel> nucleus, std::vector<Suprasegmental> suprasegs) {
-        this->nucleus = nucleus;
         this->suprasegs = suprasegs;
     }
 
@@ -91,9 +39,11 @@ public:
     std::vector<Suprasegmental> getSuprasegs() const { return suprasegs; }
 
     bool hasOnset() const { return onset.size() > 0 ? true : false; }
+    bool hasNucleus() const { return nucleus.size() > 0 ? true : false; }
     bool hasSupraseg() const { return suprasegs.size() > 0 ? true : false; }
     bool hasCoda() const { return coda.size() > 0 ? true : false; }
 
+    // Obtain the phonemic representation of the syllable
     std::string getStrSyl() const {
         std::string str = "";
 

@@ -31,25 +31,29 @@ bool SoundSystem::save() {
         return true;
     }
 
+    phonemes << "symbol,id,onset weight,nucleus weight,coda weight,suprasegmental weight\n";
+
     // Save consonants
     for (auto const& phon: consonants) {
         phonemes << phon.second.getSymbol() << ","
                  << std::hex << phon.second.getId() << ","
-                 << std::dec << phon.second.getFreq() << "\n";
+                 << std::dec << phon.second.getProbOnset() << ","
+                 << phon.second.getProbNucleus() << ","
+                 << phon.second.getProbCoda() << ",0\n";
     }
 
     // Save vowels
     for (auto const& phon: vowels) {
         phonemes << phon.second.getSymbol() << ","
-                 << std::hex << phon.second.getId() << ","
-                 << std::dec << phon.second.getFreq() << "\n";
+                 << std::hex << phon.second.getId() << ",0,"
+                 << std::dec << phon.second.getProbNucleus() << ",0,0\n";
     }
 
     // Save suprasegmentals
     for (auto const& seg: suprasegmentals) {
         phonemes << seg.second.getSymbol() << ","
-                 << std::hex << seg.second.getId() << ","
-                 << std::dec << seg.second.getFreq() << "\n";
+                 << std::hex << seg.second.getId() << ",0,0,0,"
+                 << std::dec << seg.second.getProbSupra() << "\n";
     }
 
     phonemes.close();
@@ -68,12 +72,9 @@ bool SoundSystem::load() {
         return true;
     }
 
-    // Keep track of frequency, both cannot be over 1
-    float totConFreq = 0;
-    float totVowFreq = 0;
-
     // Read each line in file
     std::string line;
+    bool isFirst = true;
     while (getline(phonemes, line)) {
         std::vector<std::string> tokens;
         std::stringstream ss(line);
@@ -84,8 +85,14 @@ bool SoundSystem::load() {
             tokens.push_back(token);
         }
 
+        // Ignore first line
+        if (isFirst) {
+            isFirst = false;
+            continue; // Skip to next line
+        }
+
         // Check if line has correct amount of values
-        if (tokens.size() != 3) {
+        if (tokens.size() != 6) {
             std::cerr << "Invalid amount of values: " << tokens.size() << "\n";
             continue; // Skip to next line
         }
@@ -101,42 +108,20 @@ bool SoundSystem::load() {
         try {
             id = std::stoi(tokens[1], nullptr, 16);
         } catch (...) {
-            std::cerr << "Could not convert '" << tokens[1] << "' into an integer id\n";
+            std::cerr << "Failed to convert '" << tokens[1] << "' into an integer id\n";
             continue; // Skip to next line
         }
 
-        // Try to convert frequency from string to float
-        float freq;
+        // Try to convert probabilities from string to float
+        float probOnset, probNucleus, probCoda, probSupra;
         try {
-            freq = std::stof(tokens[2], nullptr);
+            probOnset = std::stof(tokens[2], nullptr);
+            probNucleus = std::stof(tokens[3], nullptr);
+            probCoda = std::stof(tokens[4], nullptr);
+            probSupra = std::stof(tokens[5], nullptr);
         } catch (...) {
-            std::cerr << "Could not convert '" << tokens[2] << "' into a float\n";
+            std::cerr << "Failed to convert probabilities for " + tokens[0] + "into floats\n";
             continue; // Skip to next line
-        }
-
-        int type = id % 0x10;
-
-        // Add frequency %, do not add phoneme if % exceeds 1
-        if (type == static_cast<int>(Type::consonant)) {
-
-            // Check if adding causes total % to exceed 1
-            if (totConFreq + freq <= 1) {
-                totConFreq += freq;
-            } else {
-                std::cerr << "Cannot add any more consonants, total consonant relative frequency > 1\n";
-            }
-        } else if (type == static_cast<int>(Type::vowel)) {
-
-            // Check if adding causes total % to exceed 1
-            if (totVowFreq + freq <= 1) {
-                totVowFreq += freq;
-            } else {
-                std::cerr << "Cannot add any more vowels, total vowel relative frequency > 1\n";
-            }
-        } else if (type != 0) {
-            // ID does not denote a valid type, skip to next line
-            std::cerr << std::hex << id % 0x10 << " is not a valid type.\n";
-            continue;
         }
 
         // Insert based on type
@@ -162,7 +147,14 @@ bool SoundSystem::load() {
                 std::cerr << "Could not add the consonant [" << tokens[0] << "] with id " << std::hex << id << "\n";
             } else {
                 // Insert Consonant
-                Consonant consonant(tokens[0], freq, place, manner, voicing, coarticulation, articulation, release, (bool)isSyllabic);
+                Consonant consonant(tokens[0], probOnset, probNucleus, probCoda,
+                                    place, manner, voicing, coarticulation, articulation, release, (bool)isSyllabic);
+
+                probOnsets.push_back(probOnset);
+                probCodas.push_back(probCoda);
+
+                onsetIds.push_back(id);
+                codaIds.push_back(id);
 
                 consonants.insert(std::pair<unsigned int, Consonant>(id, consonant));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
@@ -187,12 +179,15 @@ bool SoundSystem::load() {
                 std::cerr << "Could not add the vowel [" << tokens[0] << "] with id " << std::hex << id << "\n";
             } else {
                 // Insert vowel
-                Vowel vowel(tokens[0], freq, height, back, voicing, rounding, coarticulation, root);
+                Vowel vowel(tokens[0], probNucleus, height, back, voicing, rounding, coarticulation, root);
+
+                probNuclei.push_back(probNucleus);
+                nucleusIds.push_back(id);
 
                 vowels.insert(std::pair<unsigned int, Vowel>(id, vowel));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
             }
-        } else {
+        } else if (id % 0x10 == 0) {
             // Get fields from id
             SupraType supraType = (SupraType)(id % 0x1000 / 0x10);
             Feature feature = Feature::intonation;
@@ -219,24 +214,20 @@ bool SoundSystem::load() {
                 std::cerr << "Could not add the suprasegmental " << tokens[0] << " with id " << std::hex << id << "\n";
             } else {
                 // Insert suprasegmental
-                Suprasegmental supraseg(tokens[0], freq, feature, supraType);
+                Suprasegmental supraseg(tokens[0], probSupra, feature, supraType);
+
+                probSupras.push_back(probSupra);
+                supraIds.push_back(id);
 
                 suprasegmentals.insert(std::pair<unsigned int, Suprasegmental>(id, supraseg));
                 ids.insert(std::pair<std::string, unsigned int>(tokens[0], id));
             }
+        } else {
+            // ID does not denote a valid type, skip to next line
+            std::cerr << std::hex << id % 0x10 << " is not a valid type.\n";
         }
     }
     phonemes.close();
-
-    if (totConFreq < 1) {
-        std::cerr << "WARNING: The sum of all consonant relative frequencies is less than 1, at "
-                  << totConFreq << "\n";
-    }
-
-    if (totVowFreq < 1) {
-        std::cerr << "WARNING: The sum of all vowel relative frequencies is less than 1, at "
-                  << totVowFreq << "\n";
-    }
 
     return false;
 }

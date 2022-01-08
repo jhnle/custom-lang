@@ -30,7 +30,6 @@ class Phoneme {
 protected:
     Type type;
     unsigned int id;
-    float freq;
     std::string symbol;
     std::string desc;
     Voicing voicing;
@@ -40,7 +39,6 @@ protected:
 public:
     Type getType() const { return type; }
     unsigned int getId() const { return id; }
-    float getFreq() const { return freq; }
     std::string getSymbol() const { return symbol; }
     std::string getDesc() const { return desc; }
     Voicing getVoicing() const { return voicing; }

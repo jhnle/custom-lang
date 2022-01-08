@@ -1,16 +1,14 @@
 #include "../ling/units/soundsystem.h"
-#include "../ling/units/consonant.h"
-#include "../ling/units/vowel.h"
 #include "../ling/word/morpheme.h"
 
 static Morpheme ruleVoicing(std::map<unsigned int, Consonant>&,
-                        Morpheme&);
+                            Morpheme&);
 
 static std::vector<Consonant> applyVRule(std::vector<Consonant>&,
                                          std::map<unsigned int, Consonant>&);
 
 static Morpheme rulePlosive(std::map<unsigned int, Consonant>&,
-                        Morpheme&);
+                            Morpheme&);
 
 int main() {
     SoundSystem soundSystem("preset00");
@@ -36,7 +34,8 @@ int main() {
             std::vector<Consonant> {
                 consonants[ids["d"]],
                 consonants[ids["s"]]
-            }
+            },
+            std::vector<Suprasegmental>()
         )
     }; // skæds
 
@@ -50,7 +49,8 @@ int main() {
             },
             std::vector<Consonant> {
                 consonants[ids["t"]],
-            }
+            },
+            std::vector<Suprasegmental>()
         ),
         Syllable(
             std::vector<Consonant> {
@@ -61,7 +61,8 @@ int main() {
             },
             std::vector<Consonant> {
                 consonants[ids["s"]],
-            }
+            },
+            std::vector<Suprasegmental>()
         )
     }; // tætsəs
 
@@ -77,7 +78,8 @@ int main() {
             std::vector<Consonant> {
                 consonants[ids["g"]],
                 consonants[ids["s"]]
-            }
+            },
+            std::vector<Suprasegmental>()
         ),
         Syllable(
             std::vector<Consonant> {
@@ -85,7 +87,9 @@ int main() {
             },
             std::vector<Vowel> {
                 vowels[ids["i"]],
-            }
+            },
+            std::vector<Consonant>(),
+            std::vector<Suprasegmental>()
         )
     }; // soʊgzdi
 
@@ -99,7 +103,8 @@ int main() {
             },
             std::vector<Consonant> {
                 consonants[ids["m"]],
-            }
+            },
+            std::vector<Suprasegmental>()
         ),
         Syllable(
             std::vector<Consonant> {
@@ -110,7 +115,8 @@ int main() {
             },
             std::vector<Consonant> {
                 consonants[ids["l"]],
-            }
+            },
+            std::vector<Suprasegmental>()
         )
     }; // ŋɑmnəl
 
@@ -125,7 +131,8 @@ int main() {
             },
             std::vector<Consonant> {
                 consonants[ids["b"]],
-            }
+            },
+            std::vector<Suprasegmental>()
         ),
         Syllable(
             std::vector<Consonant> {
@@ -133,7 +140,9 @@ int main() {
             },
             std::vector<Vowel> {
                 vowels[ids["ɑ"]],
-            }
+            },
+            std::vector<Consonant>(),
+            std::vector<Suprasegmental>()
         )
     }; // θoʊbnɑ
 
@@ -170,7 +179,7 @@ int main() {
  * so ignore the nucleus
  */
 static Morpheme ruleVoicing(std::map<unsigned int, Consonant>& consonants,
-                        Morpheme& input) {
+                            Morpheme& input) {
 
     Morpheme output;
     int numSyl = input.getNumSyl();
@@ -178,29 +187,15 @@ static Morpheme ruleVoicing(std::map<unsigned int, Consonant>& consonants,
     // Loop for each syllable
     for(int i = 0; i < numSyl; i++) {
         // First grab old onset and coda
-        std::vector<Consonant> oldOnset = input.getSyllables().at(i).getOnset();
-        std::vector<Consonant> oldCoda = input.getSyllables().at(i).getCoda();
+        std::vector<Consonant> oldOnset = input.getSyllables()[i].getOnset();
+        std::vector<Consonant> oldCoda = input.getSyllables()[i].getCoda();
 
         // Create new onset and coda with rule applied
         std::vector<Consonant> onset = applyVRule(oldOnset, consonants);
         std::vector<Consonant> coda = applyVRule(oldCoda, consonants);
 
-        /**
-         * Create new syllable using appropriate constructor:
-         * V, VC, CV, else CVC
-         * And add to output.
-         *
-         * How can this be simplified?
-         */
-        if (onset.empty() && coda.empty()) {
-            output.addSyllable(Syllable(input.getSyllables().at(i).getNucleus()));
-        } else if (onset.empty()) {
-            output.addSyllable(Syllable(input.getSyllables().at(i).getNucleus(), coda));
-        } else if (coda.empty()) {
-            output.addSyllable(Syllable(onset, input.getSyllables().at(i).getNucleus()));
-        } else {
-            output.addSyllable(Syllable(onset, input.getSyllables().at(i).getNucleus(), coda));
-        }
+        output.addSyllable(Syllable(onset, input.getSyllables()[i].getNucleus(),
+                                    coda, std::vector<Suprasegmental>()));
     }
     return output;
 }
@@ -239,15 +234,15 @@ static std::vector<Consonant> applyVRule(std::vector<Consonant>& input, std::map
  * Here, only onsets can occur before a vowel, so ignore coda and nucleus
  */
 static Morpheme rulePlosive(std::map<unsigned int, Consonant>& consonants,
-                        Morpheme& input) {
+                            Morpheme& input) {
 
     Morpheme output;
     int numSyl = input.getNumSyl();
 
     // Loop for each syllable
     for(int i = 0; i < numSyl; i++) {
-        std::vector<Consonant> onset = input.getSyllables().at(i).getOnset();
-        std::vector<Consonant> coda = input.getSyllables().at(i).getCoda();
+        std::vector<Consonant> onset = input.getSyllables()[i].getOnset();
+        std::vector<Consonant> coda = input.getSyllables()[i].getCoda();
 
         //Check if final consonant in onset is a nasal
         if (onset.back().getManner() == Manner::nasal) {
@@ -262,22 +257,8 @@ static Morpheme rulePlosive(std::map<unsigned int, Consonant>& consonants,
             }
         }
 
-        /**
-         * Create new syllable using appropriate constructor:
-         * V, VC, CV, else CVC
-         * And add to output.
-         *
-         * How can this be simplified?
-         */
-        if (onset.empty()) {
-            output.addSyllable(Syllable(input.getSyllables().at(i).getNucleus()));
-        } else if (onset.empty()) {
-            output.addSyllable(Syllable(input.getSyllables().at(i).getNucleus(), coda));
-        } else if (coda.empty()) {
-            output.addSyllable(Syllable(onset, input.getSyllables().at(i).getNucleus()));
-        } else {
-            output.addSyllable(Syllable(onset, input.getSyllables().at(i).getNucleus(), coda));
-        }
+        output.addSyllable(Syllable(onset, input.getSyllables()[i].getNucleus(),
+                                    coda, std::vector<Suprasegmental>()));
     }
     return output;
 }

@@ -2,7 +2,7 @@
 #define WORD_H
 
 #include <initializer_list>
-#include <morpheme.h>
+#include "morpheme.h"
 
 
 class Word {
@@ -17,11 +17,11 @@ private:
   int numMorphemes;
   
 public:
-  Word(initializer_list<Morpheme> lst) {
+  Word(std::initializer_list<Morpheme> lst) {
+    numMorphemes = 0;
     for (const auto& morpheme : lst) {
-        addMorpheme(morpheme);
+      addMorpheme(morpheme);
     }
-
   }
   
   Word() {
@@ -46,6 +46,6 @@ public:
     return numMorphemes;
   }
 
-}
+};
 
 #endif
