@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "../ling/units/soundsystem.h"
 #include "../ling/word/morpheme.h"
 
