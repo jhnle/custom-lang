@@ -9,9 +9,9 @@
  * soundSystem.
  *
  */
-Syllable makeSyllable(SoundSystem soundSystem,
-                      std::array<int, 4> max,
-                      std::array<int, 4> min) {
+Syllable makeSyllable(SoundSystem& soundSystem,
+                      std::array<int, 4>& max,
+                      std::array<int, 4>& min) {
 
     std::map<unsigned int, Consonant> consonants = soundSystem.getConsonants();
     std::map<unsigned int, Vowel> vowels = soundSystem.getVowels();
@@ -116,7 +116,7 @@ Syllable makeSyllable(SoundSystem soundSystem,
  * a CCV syllable.
  *
  */
-std::array<int, 4> genSyllableType(std::array<int, 4> max, std::array<int, 4> min) {
+std::array<int, 4> genSyllableType(std::array<int, 4>& max, std::array<int, 4>& min) {
     std::array<int, 4> result = {0};
 
     std::random_device randomDevice;

@@ -1,9 +1,6 @@
 #ifndef SOUNDSYSTEM_H
 #define SOUNDSYSTEM_H
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <map>
 #include <vector>
 
@@ -23,13 +20,52 @@ private:
     std::vector<float> probOnsets, probNuclei, probCodas, probSupras;
     std::vector<unsigned int> onsetIds, nucleusIds, codaIds, supraIds;
     std::map<std::string, unsigned int> ids;    // Temporary, meant for testing
+
+    /* A phoneme symbol is valid if its length is between
+    * 1 and the MAX_PHONEME_LENGTH (inclusive), is not the empty string
+    * and does not contain spaces.
+    */
     bool isValidSym(std::string) const;
+
+    /*
+     * Adds consonant to the soundSystem
+     * Returns true if the consonant could not be added
+     * Returns false if the consonant was successfully added
+     */
+    bool insertConsonant(std::string, unsigned int, float, float);
+
+    /*
+     * Adds vowel to the soundSystem
+     * Returns true if the vowel could not be added
+     * Returns false if vowel was successfully added
+     */
+    bool insertVowel(std::string, unsigned int, float);
+
+    /*
+     * Adds suprasegmental to the soundSystem
+     * Returns true if the suprasegmental could not be added
+     * Returns false if suprasegmental was successfully added
+     */
+    bool insertSupra(std::string, unsigned int, float);
 public:
     SoundSystem(std::string name) {
         this->name = name;
     }
 
+    /*
+     * Save all phonemes into a csv for the corresponding language
+     *
+     * Returns true if file couldnt be opened, consonants is empty, or vowels is empty
+     * Returns false otherwise
+     */
     bool save();
+
+    /*
+     * Load phonemes from a csv from the corresponding language
+     *
+     * Returns true if file couldnt be opened
+     * Returns false otherwise
+     */
     bool load();
 
     std::map<unsigned int, Consonant> getConsonants() const { return consonants; }

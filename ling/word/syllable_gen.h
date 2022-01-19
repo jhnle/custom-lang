@@ -4,8 +4,8 @@
 #include "syllable.h"
 #include "../units/soundsystem.h"
 
-Syllable makeSyllable(SoundSystem, std::array<int, 4>, std::array<int, 4>);
+Syllable makeSyllable(SoundSystem&, std::array<int, 4>&, std::array<int, 4>&);
 
-std::array<int, 4> genSyllableType(std::array<int, 4>, std::array<int, 4>);
+std::array<int, 4> genSyllableType(std::array<int, 4>&, std::array<int, 4>&);
 
 #endif
