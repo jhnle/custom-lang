@@ -3,13 +3,7 @@
 #include "../ling/units/soundsystem.h"
 #include "../ling/word/root_morph.h"
 
-static RootMorph ruleVoicing(std::map<unsigned int,
-                             Consonant>&, RootMorph&);
-
-static std::vector<Consonant> applyVRule(std::vector<Consonant>&,
-                                         std::map<unsigned int, Consonant>&);
-
-static RootMorph rulePlosive(std::map<unsigned int, Consonant>&,
+static RootMorph assimilation(std::map<unsigned int, Consonant>&,
                              RootMorph&);
 
 int main() {
@@ -20,23 +14,6 @@ int main() {
     std::map<unsigned int, Vowel> vowels = soundSystem.getVowels();
     std::map<std::string, unsigned int> ids = soundSystem.getIds();
 
-
-    std::vector<Syllable> syl1 {
-        Syllable(
-            std::vector<Consonant> {
-                consonants[ids["s"]],
-                consonants[ids["k"]]
-            },
-            std::vector<Vowel> {
-                vowels[ids["æ"]],
-            },
-            std::vector<Consonant> {
-                consonants[ids["d"]],
-                consonants[ids["s"]]
-            },
-            std::vector<Suprasegmental>()
-        )
-    };
     
     std::vector<Syllable> syl1 {
         Syllable(
@@ -60,9 +37,7 @@ int main() {
     };
 
     RootMorph morpheme1 (syl1, ConLexCat::noun, true); // ?nb?li
-
-    // Apply voicing rule
-    RootMorph rep1 = ruleVoicing(consonants, morpheme1); // ?mb?li
+    RootMorph rep1 = assimilate(consonants, morpheme1); // ?mb?li
 
 
 
@@ -74,12 +49,11 @@ int main() {
 }
 
 
-/* Nasal becomes plosive if it occurs before a vowel
- * /nasal/ --> [plosive] / _V
- *
- * Here, only onsets can occur before a vowel, so ignore coda and nucleus
+/* /t/(alveolar plosive) -> [p] (bilabial plosive) before /m/, /b/, /p/ (bilabial)
+ * using examples from http://phonetics-cediel.blogspot.com/2011/08/assimilation-in-english.html,
+ * consonant before consonant is changed, so only coda changed
  */
-static RootMorph rulePlosive(std::map<unsigned int, Consonant>& consonants,
+static RootMorph assimilate(std::map<unsigned int, Consonant>& consonants,
                             RootMorph& input) {
 
     RootMorph output;
@@ -93,18 +67,17 @@ static RootMorph rulePlosive(std::map<unsigned int, Consonant>& consonants,
         //Check if final consonant in onset is a nasal
         if (coda.back().getPlace() == Place::alveolar && coda.back().getManner() == Manner::plosive && onset.front().getPlace::bilabial) {
 
-            // Turn plosive
+            // Set bilabial
             unsigned int id = coda.back().getId() + ((static_cast<int>(Place::bilabial
                                                    - static_cast<int>(Manner::alveolar)) * 0x010);
 
-            // Change id only if corresponding plosive exists
             if (consonants.find(id) != consonants.end()) {
                 coda.back() = consonants[id];
             }
         }
 
         output.addSyllable(Syllable(onset, input.getSyllables()[i].getNucleus(),
-                                    coda, std::vector<Suprasegmental>()));
+                                    coda));
     }
     return output;
 }
