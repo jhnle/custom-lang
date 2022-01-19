@@ -41,15 +41,6 @@ protected:
     std::string phonemic;               // Phonemic transcription of morpheme
     int numSyl;
 public:
-    Morpheme(std::initializer_list<Syllable> list) {
-        numSyl = 0;
-        for (const auto& syllable : list) {
-            addSyllable(syllable);
-        }
-    }
-
-    Morpheme() { numSyl = 0; }
-
     void addSyllable(Syllable syl) {
         syllables.push_back(syl);
         phonemic += syl.getStrSyl();

@@ -1,16 +1,16 @@
 #include <iostream>
 
 #include "../ling/units/soundsystem.h"
-#include "../ling/word/morpheme.h"
+#include "../ling/word/root_morph.h"
 
-static Morpheme ruleVoicing(std::map<unsigned int, Consonant>&,
-                            Morpheme&);
+static RootMorph ruleVoicing(std::map<unsigned int, Consonant>&,
+                            RootMorph&);
 
 static std::vector<Consonant> applyVRule(std::vector<Consonant>&,
                                          std::map<unsigned int, Consonant>&);
 
-static Morpheme rulePlosive(std::map<unsigned int, Consonant>&,
-                            Morpheme&);
+static RootMorph rulePlosive(std::map<unsigned int, Consonant>&,
+                            RootMorph&);
 
 int main() {
     SoundSystem soundSystem("preset00");
@@ -20,28 +20,29 @@ int main() {
     std::map<unsigned int, Vowel> vowels = soundSystem.getVowels();
     std::map<std::string, unsigned int> ids = soundSystem.getIds();
 
-    /* Use ids map to retrieve phoneme given a symbol,
+    /*
+     * Use ids map to retrieve phoneme given a symbol,
      * since ids may change in the future
      */
 
-    Morpheme morpheme1 {
-        Syllable(
-            std::vector<Consonant> {
-                consonants[ids["s"]],
-                consonants[ids["k"]]
-            },
-            std::vector<Vowel> {
-                vowels[ids["æ"]],
-            },
-            std::vector<Consonant> {
-                consonants[ids["d"]],
-                consonants[ids["s"]]
-            },
-            std::vector<Suprasegmental>()
-        )
-    }; // skæds
+    std::vector<Syllable> syl1 {
+            Syllable(
+                std::vector<Consonant> {
+                    consonants[ids["s"]],
+                    consonants[ids["k"]]
+                },
+                std::vector<Vowel> {
+                    vowels[ids["æ"]],
+                },
+                std::vector<Consonant> {
+                    consonants[ids["d"]],
+                    consonants[ids["s"]]
+                },
+                std::vector<Suprasegmental>()
+            )
+    };
 
-    Morpheme morpheme2 {
+    std::vector<Syllable> syl2 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["t"]],
@@ -66,9 +67,9 @@ int main() {
             },
             std::vector<Suprasegmental>()
         )
-    }; // tætsəs
+    };
 
-    Morpheme morpheme3 {
+    std::vector<Syllable> syl3 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["s"]],
@@ -93,9 +94,9 @@ int main() {
             std::vector<Consonant>(),
             std::vector<Suprasegmental>()
         )
-    }; // soʊgzdi
+    };
 
-    Morpheme morpheme4 {
+    std::vector<Syllable> syl4 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["ŋ"]],
@@ -120,9 +121,9 @@ int main() {
             },
             std::vector<Suprasegmental>()
         )
-    }; // ŋɑmnəl
+    };
 
-    Morpheme morpheme5 {
+    std::vector<Syllable> syl5 {
         Syllable(
             std::vector<Consonant> {
                 consonants[ids["θ"]],
@@ -146,16 +147,22 @@ int main() {
             std::vector<Consonant>(),
             std::vector<Suprasegmental>()
         )
-    }; // θoʊbnɑ
+    };
+
+    RootMorph morpheme1 (syl1, ConLexCat::noun, true); // skæds
+    RootMorph morpheme2 (syl2, ConLexCat::noun, true); // tætsəs
+    RootMorph morpheme3 (syl3, ConLexCat::noun, true); // soʊgzdi
+    RootMorph morpheme4 (syl4, ConLexCat::noun, true); // ŋɑmnəl
+    RootMorph morpheme5 (syl5, ConLexCat::noun, true); // θoʊbnɑ
 
     // Apply voicing rule
-    Morpheme rep1 = ruleVoicing(consonants, morpheme1); // skædz
-    Morpheme rep2 = ruleVoicing(consonants, morpheme2); // tætsəs
-    Morpheme rep3 = ruleVoicing(consonants, morpheme3); // soʊgzdi
+    RootMorph rep1 = ruleVoicing(consonants, morpheme1); // skædz
+    RootMorph rep2 = ruleVoicing(consonants, morpheme2); // tætsəs
+    RootMorph rep3 = ruleVoicing(consonants, morpheme3); // soʊgzdi
 
     // Apply plosive rule
-    Morpheme rep4 = rulePlosive(consonants, morpheme4); // gɑmdəl
-    Morpheme rep5 = rulePlosive(consonants, morpheme5); // θoʊbdɑ
+    RootMorph rep4 = rulePlosive(consonants, morpheme4); // gɑmdəl
+    RootMorph rep5 = rulePlosive(consonants, morpheme5); // θoʊbdɑ
 
     std::cout << "/s/ --> [z] / C_\n"
               << "/" << morpheme1.getPhonemic() << "/ --> ["
@@ -180,10 +187,10 @@ int main() {
  * Consonants, at this point, can only occur in the onset and coda,
  * so ignore the nucleus
  */
-static Morpheme ruleVoicing(std::map<unsigned int, Consonant>& consonants,
-                            Morpheme& input) {
+static RootMorph ruleVoicing(std::map<unsigned int, Consonant>& consonants,
+                            RootMorph& input) {
 
-    Morpheme output;
+    RootMorph output;
     int numSyl = input.getNumSyl();
 
     // Loop for each syllable
@@ -235,10 +242,10 @@ static std::vector<Consonant> applyVRule(std::vector<Consonant>& input, std::map
  *
  * Here, only onsets can occur before a vowel, so ignore coda and nucleus
  */
-static Morpheme rulePlosive(std::map<unsigned int, Consonant>& consonants,
-                            Morpheme& input) {
+static RootMorph rulePlosive(std::map<unsigned int, Consonant>& consonants,
+                            RootMorph& input) {
 
-    Morpheme output;
+    RootMorph output;
     int numSyl = input.getNumSyl();
 
     // Loop for each syllable
