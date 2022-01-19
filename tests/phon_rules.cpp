@@ -3,14 +3,14 @@
 #include "../ling/units/soundsystem.h"
 #include "../ling/word/root_morph.h"
 
-static RootMorph ruleVoicing(std::map<unsigned int, Consonant>&,
-                            RootMorph&);
+static RootMorph ruleVoicing(std::map<unsigned int,
+                             Consonant>&, RootMorph&);
 
 static std::vector<Consonant> applyVRule(std::vector<Consonant>&,
                                          std::map<unsigned int, Consonant>&);
 
 static RootMorph rulePlosive(std::map<unsigned int, Consonant>&,
-                            RootMorph&);
+                             RootMorph&);
 
 int main() {
     SoundSystem soundSystem("preset00");
@@ -26,20 +26,20 @@ int main() {
      */
 
     std::vector<Syllable> syl1 {
-            Syllable(
-                std::vector<Consonant> {
-                    consonants[ids["s"]],
-                    consonants[ids["k"]]
-                },
-                std::vector<Vowel> {
-                    vowels[ids["æ"]],
-                },
-                std::vector<Consonant> {
-                    consonants[ids["d"]],
-                    consonants[ids["s"]]
-                },
-                std::vector<Suprasegmental>()
-            )
+        Syllable(
+            std::vector<Consonant> {
+                consonants[ids["s"]],
+                consonants[ids["k"]]
+            },
+            std::vector<Vowel> {
+                vowels[ids["æ"]],
+            },
+            std::vector<Consonant> {
+                consonants[ids["d"]],
+                consonants[ids["s"]]
+            },
+            std::vector<Suprasegmental>()
+        )
     };
 
     std::vector<Syllable> syl2 {
